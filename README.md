@@ -1,5 +1,7 @@
 # things3-cli
 
+[![CI](https://github.com/ossianhempel/things3-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/ossianhempel/things3-cli/actions/workflows/ci.yml)
+
 CLI for Things 3 by Cultured Code, implemented in Go.
 
 This project aims to reproduce the behavior and UX of the open source
