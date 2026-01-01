@@ -10,7 +10,7 @@ func TestBuildUpdateProjectURLErrorMissingAuthToken(t *testing.T) {
 	if err == nil {
 		t.Fatalf("expected error")
 	}
-	if err.Error() != "Error: Must specify --auth-token=token" {
+	if err.Error() != "Error: Missing Things auth token. Set THINGS_AUTH_TOKEN or pass --auth-token=TOKEN (Things > Settings > General > Things URLs)." {
 		t.Fatalf("unexpected error: %v", err)
 	}
 }
