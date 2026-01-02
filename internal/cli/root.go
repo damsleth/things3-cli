@@ -53,6 +53,7 @@ func NewRoot(app *App) *cobra.Command {
 	cmd.AddCommand(NewProjectsCommand(app))
 	cmd.AddCommand(NewTagsCommand(app))
 	cmd.AddCommand(NewTasksCommand(app))
+	cmd.AddCommand(NewAuthCommand(app))
 	cmd.AddCommand(NewUpdateCommand(app))
 	cmd.AddCommand(NewUpdateAreaCommand(app))
 	cmd.AddCommand(NewUpdateProjectCommand(app))
@@ -110,6 +111,8 @@ func NewRoot(app *App) *cobra.Command {
 				printHelp(app.Out, formatHelpText(tagsHelp, isTTY(app.Out)))
 			case "tasks":
 				printHelp(app.Out, formatHelpText(tasksHelp, isTTY(app.Out)))
+			case "auth":
+				printHelp(app.Out, formatHelpText(authHelp, isTTY(app.Out)))
 			case "show":
 				printHelp(app.Out, formatHelpText(showHelp, isTTY(app.Out)))
 			case "search":
@@ -178,6 +181,8 @@ func NewRoot(app *App) *cobra.Command {
 			printHelp(app.Out, formatHelpText(tagsHelp, isTTY(app.Out)))
 		case "tasks":
 			printHelp(app.Out, formatHelpText(tasksHelp, isTTY(app.Out)))
+		case "auth":
+			printHelp(app.Out, formatHelpText(authHelp, isTTY(app.Out)))
 		case "show":
 			printHelp(app.Out, formatHelpText(showHelp, isTTY(app.Out)))
 		case "search":

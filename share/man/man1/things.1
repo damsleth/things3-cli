@@ -110,6 +110,10 @@ List tags from the Things database\.
 List todos from the Things database\.
 .LP
 .TP
+\fIthings auth\fP
+Show Things auth token status and setup help\.
+.LP
+.TP
 \fIthings help \[lB]COMMAND\[rB]\fP
 Show documentation for things\-cli and its subcommands\.
 .LP
@@ -130,6 +134,30 @@ Open Things in the foreground\.
 .TP
 \fB--dry-run\fR
 Print the Things URL without opening it\.
+.LP
+.SH AUTHORIZATION
+.LP
+.PP
+Update operations use the Things URL scheme and require an auth token\.
+.LP
+.PP
+1\. Open Things 3\.
+.PP
+2\. Settings \-\> General \-\> Things URLs\.
+.PP
+3\. Copy the token (or enable \[dq]Allow 'things' CLI to access Things\[dq])\.
+.PP
+4\. \fBexport THINGS_AUTH_TOKEN=your_token_here\fR
+.LP
+.PP
+Tip: add the export to your shell profile (e\.g\. \fB~/.zshrc\fR) to persist it\.
+You can run \fBthings auth\fR to check token status and print these steps\.
+.LP
+.SH things auth
+.LP
+.PP
+Prints whether \fBTHINGS_AUTH_TOKEN\fR is set\. If missing, prints setup steps for
+the Things URL scheme authorization token\.
 .LP
 .SH things add [OPTIONS] [--] [-|TITLE]
 .LP

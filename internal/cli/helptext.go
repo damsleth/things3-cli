@@ -37,6 +37,7 @@ COMMANDS
   areas          - list areas from the Things database
   tags           - list tags from the Things database
   tasks          - list todos from the Things database
+  auth           - show Things auth token status and setup help
   help           - show documentation for the given command
 
 GLOBAL OPTIONS
@@ -65,6 +66,28 @@ LICENSE
 
 SEE ALSO
   https://culturedcode.com/things/support/articles/2803573/
+`
+
+const authHelp = `Usage: things auth
+
+NAME
+  things auth - show Things auth token status and setup help
+
+SYNOPSIS
+  things auth
+
+DESCRIPTION
+  Prints whether {{BT}}THINGS_AUTH_TOKEN{{BT}} is set. If missing, prints setup
+  steps for the Things URL scheme authorization token.
+
+NOTES
+  Token setup:
+    1. Open Things 3.
+    2. Settings -> General -> Things URLs.
+    3. Copy the token (or enable "Allow 'things' CLI to access Things").
+    4. export THINGS_AUTH_TOKEN=your_token_here
+
+  Tip: add the export to your shell profile (e.g. ~/.zshrc) to persist it.
 `
 
 const projectsHelp = `Usage: things projects [OPTIONS...]
@@ -1197,6 +1220,15 @@ DESCRIPTION
   Scheduling note: use {{BT}}--when=someday{{BT}} for Someday, or
   {{BT}}--later{{BT}} for This Evening.
 
+AUTHORIZATION
+  Update commands require a Things URL scheme token. Run {{BT}}things auth{{BT}}
+  for setup, set {{BT}}THINGS_AUTH_TOKEN{{BT}}, or pass {{BT}}--auth-token{{BT}}.
+
+  Token setup:
+    1. Open Things 3.
+    2. Settings -> General -> Things URLs.
+    3. Copy the token (or enable "Allow 'things' CLI to access Things").
+
 OPTIONS
   --auth-token=TOKEN
     The Things URL scheme authorization token. Required. See below for more
@@ -1375,6 +1407,15 @@ DESCRIPTION
   multiple lines of text, the first is set as the project's title and the
   remaining lines are set as the project's notes. Notes set this way take
   precedence over the {{BT}}--notes={{BT}} option.
+
+AUTHORIZATION
+  Update commands require a Things URL scheme token. Run {{BT}}things auth{{BT}}
+  for setup, set {{BT}}THINGS_AUTH_TOKEN{{BT}}, or pass {{BT}}--auth-token{{BT}}.
+
+  Token setup:
+    1. Open Things 3.
+    2. Settings -> General -> Things URLs.
+    3. Copy the token (or enable "Allow 'things' CLI to access Things").
 
 OPTIONS
   --auth-token=TOKEN

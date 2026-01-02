@@ -87,6 +87,9 @@ https://github.com/ossianhempel/things3-cli#readme
 *things tasks*
   List todos from the Things database.
 
+*things auth*
+  Show Things auth token status and setup help.
+
 *things help [COMMAND]*
   Show documentation for things3-cli and its subcommands.
 
@@ -103,6 +106,23 @@ https://github.com/ossianhempel/things3-cli#readme
 
 `--dry-run`
   Print the Things URL without opening it.
+
+## AUTHORIZATION
+
+Update operations use the Things URL scheme and require an auth token.
+
+1. Open Things 3.
+2. Settings -> General -> Things URLs.
+3. Copy the token (or enable "Allow 'things' CLI to access Things").
+4. `export THINGS_AUTH_TOKEN=your_token_here`
+
+Tip: add the export to your shell profile (e.g. `~/.zshrc`) to persist it.
+You can run `things auth` to check token status and print these steps.
+
+## things auth
+
+Prints whether `THINGS_AUTH_TOKEN` is set. If missing, prints setup steps for
+the Things URL scheme authorization token.
 
 ## things add [OPTIONS] [--] [-|TITLE]
 

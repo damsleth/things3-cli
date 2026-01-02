@@ -49,6 +49,22 @@ brew install ossianhempel/tap/things3-cli
 - `help`             Command help and man page
 - `--version`        Print CLI + Things version info
 
+## Auth token setup (for update commands)
+
+Update operations use the Things URL scheme and require an auth token.
+
+1. Open Things 3.
+2. Settings -> General -> Things URLs.
+3. Copy the token (or enable "Allow 'things' CLI to access Things").
+4. Export it:
+
+```
+export THINGS_AUTH_TOKEN=your_token_here
+```
+
+Tip: add the export to your shell profile (e.g. `~/.zshrc`) to persist it.
+You can run `things auth` to check token status and print these steps.
+
 ## Database access (read-only)
 
 In addition to the URL-scheme commands above, this CLI can read your local
@@ -74,8 +90,6 @@ grant your terminal Full Disk Access.
   authorization model.
 - Write commands open Things in the background by default; use `--foreground`
   to bring it to the front, or `--dry-run` to print the URL without opening.
-- For update operations you can set `THINGS_AUTH_TOKEN` to avoid passing
-  `--auth-token` every time.
 - Area creation/updates use AppleScript and require Things automation
   permission for your terminal (you may see a macOS prompt).
 - Aliases: `create-project` -> `add-project`, `create-area` -> `add-area`.
