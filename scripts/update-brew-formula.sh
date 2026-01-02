@@ -76,7 +76,7 @@ fi
 
 SHA=$(curl -fsSL "$URL" | shasum -a 256 | awk '{print $1}')
 
-cat > "$ROOT_DIR/Formula/things3-cli.rb" <<FORMULA
+  cat > "$ROOT_DIR/Formula/things3-cli.rb" <<FORMULA
 class Things3Cli < Formula
   desc "CLI for Things 3"
   homepage "https://github.com/ossianhempel/things3-cli"
@@ -88,7 +88,7 @@ class Things3Cli < Formula
 
   def install
     ldflags = "-s -w -X github.com/ossianhempel/things3-cli/internal/cli.Version=#{version}"
-    system "go", "build", *std_go_args(ldflags: ldflags), "./cmd/things"
+    system "go", "build", "-trimpath", "-ldflags", ldflags, "-o", bin/"things", "./cmd/things"
   end
 
   test do
