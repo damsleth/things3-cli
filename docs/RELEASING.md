@@ -17,6 +17,7 @@ read_when:
 - [ ] Update `CHANGELOG.md`: move items from **Unreleased** into a new version section with today’s date.
 - [ ] Run tests: `make test`.
 - [ ] Build release artifacts: `./scripts/build-release.sh vX.Y.Z`.
+- [ ] Update Homebrew formula: `./scripts/update-brew-formula.sh --version vX.Y.Z` (commits to `Formula/`).
 - [ ] Generate release notes: `./scripts/release-notes.sh vX.Y.Z` (should output only the changelog bullets).
 - [ ] Tag the release: `git tag vX.Y.Z` then `git push --tags`.
 - [ ] Create the GitHub release:

@@ -23,6 +23,13 @@ end-to-end coverage for the Things URL scheme interactions on macOS.
 make install
 ```
 
+## Installation (Homebrew)
+
+```
+brew tap ossianhempel/things3-cli
+brew install things3-cli
+```
+
 ## Target features (parity with reference)
 
 - `add`              Add a new todo
