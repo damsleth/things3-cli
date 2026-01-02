@@ -54,3 +54,27 @@ func TestUpdateAreaCommandWithIDAddTags(t *testing.T) {
 		t.Fatalf("expected tag names in script, got %q", script)
 	}
 }
+
+func TestUpdateAreaCommandWithTitle(t *testing.T) {
+	runner := &recordScriptRunner{}
+	app := &App{
+		In:       strings.NewReader(""),
+		Out:      &bytes.Buffer{},
+		Err:      &bytes.Buffer{},
+		Scripter: runner,
+	}
+
+	root := NewRoot(app)
+	root.SetArgs([]string{"update-area", "--id", "ABC123", "--title", "Renamed"})
+	root.SetOut(app.Out)
+	root.SetErr(app.Err)
+
+	if err := root.Execute(); err != nil {
+		t.Fatalf("execute failed: %v", err)
+	}
+
+	script := requireScript(t, runner)
+	if !strings.Contains(script, "set name of targetArea to \"Renamed\"") {
+		t.Fatalf("expected title update in script, got %q", script)
+	}
+}

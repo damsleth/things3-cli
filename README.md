@@ -27,11 +27,13 @@ brew install ossianhempel/tap/things3-cli
 
 - `add`              Add a new todo
 - `update`           Update an existing todo (requires auth token)
+- `delete`           Delete an existing todo
 - `add-area`         Add a new area
 - `add-project`      Add a new project
 - `update-area`      Update an existing area
 - `delete-area`      Delete an existing area
 - `update-project`   Update an existing project (requires auth token)
+- `delete-project`   Delete an existing project
 - `show`             Show an area, project, tag, or todo from the database
 - `search`           Search tasks in the database
 - `inbox`            List inbox tasks
@@ -91,8 +93,10 @@ grant your terminal Full Disk Access.
   authorization model.
 - Write commands open Things in the background by default; use `--foreground`
   to bring it to the front, or `--dry-run` to print the URL without opening.
-- Area creation/updates/deletions use AppleScript and require Things automation
-  permission for your terminal (you may see a macOS prompt).
+- Delete commands (todo/project/area) use AppleScript and require Things
+  automation permission for your terminal (you may see a macOS prompt).
+- Delete commands prompt for confirmation when run interactively; pass
+  `--confirm` in non-interactive scripts. Use `--dry-run` to preview.
 - Aliases: `create-project` -> `add-project`, `create-area` -> `add-area`.
 - Scheduling: use `--when=someday` to move to Someday; use `update --later`
   (or `--when=evening`) to move to This Evening.

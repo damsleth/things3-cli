@@ -43,7 +43,7 @@ func TestBuildUpdateAreaScriptRequiresTags(t *testing.T) {
 	if err == nil {
 		t.Fatalf("expected error")
 	}
-	if err.Error() != "Error: Must specify --tags or --add-tags" {
+	if err.Error() != "Error: Must specify --tags, --add-tags, or --title" {
 		t.Fatalf("unexpected error: %v", err)
 	}
 }
@@ -74,6 +74,16 @@ func TestBuildUpdateAreaScriptReplaceTags(t *testing.T) {
 	}
 	if contains(script, "currentTags") {
 		t.Fatalf("did not expect add-tags flow in %q", script)
+	}
+}
+
+func TestBuildUpdateAreaScriptWithTitle(t *testing.T) {
+	script, err := BuildUpdateAreaScript(UpdateAreaOptions{ID: "123", Title: "Renamed"}, "")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if !contains(script, "set name of targetArea to \"Renamed\"") {
+		t.Fatalf("expected title update in %q", script)
 	}
 }
 

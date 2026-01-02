@@ -28,6 +28,7 @@ func NewUpdateAreaCommand(app *App) *cobra.Command {
 
 	flags := cmd.Flags()
 	flags.StringVar(&opts.ID, "id", "", "ID of the area to update")
+	flags.StringVar(&opts.Title, "title", "", "New title for the area")
 	flags.StringVar(&opts.Tags, "tags", "", "Replace tags")
 	flags.StringVar(&opts.AddTags, "add-tags", "", "Add tags")
 

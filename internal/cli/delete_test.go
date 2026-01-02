@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestDeleteAreaCommandRequiresTarget(t *testing.T) {
+func TestDeleteCommandRequiresTarget(t *testing.T) {
 	runner := &recordScriptRunner{}
 	app := &App{
 		In:       strings.NewReader(""),
@@ -16,7 +16,7 @@ func TestDeleteAreaCommandRequiresTarget(t *testing.T) {
 	}
 
 	root := NewRoot(app)
-	root.SetArgs([]string{"delete-area"})
+	root.SetArgs([]string{"delete"})
 	root.SetOut(app.Out)
 	root.SetErr(app.Err)
 
@@ -28,7 +28,7 @@ func TestDeleteAreaCommandRequiresTarget(t *testing.T) {
 	}
 }
 
-func TestDeleteAreaCommandWithID(t *testing.T) {
+func TestDeleteCommandWithID(t *testing.T) {
 	runner := &recordScriptRunner{}
 	app := &App{
 		In:       strings.NewReader(""),
@@ -38,7 +38,7 @@ func TestDeleteAreaCommandWithID(t *testing.T) {
 	}
 
 	root := NewRoot(app)
-	root.SetArgs([]string{"delete-area", "--id", "ABC123", "--confirm", "ABC123"})
+	root.SetArgs([]string{"delete", "--id", "ABC123", "--confirm", "ABC123"})
 	root.SetOut(app.Out)
 	root.SetErr(app.Err)
 
@@ -47,15 +47,15 @@ func TestDeleteAreaCommandWithID(t *testing.T) {
 	}
 
 	script := requireScript(t, runner)
-	if !strings.Contains(script, "first area whose id is \"ABC123\"") {
+	if !strings.Contains(script, "first to do whose id is \"ABC123\"") {
 		t.Fatalf("expected id lookup in script, got %q", script)
 	}
-	if !strings.Contains(script, "delete targetArea") {
+	if !strings.Contains(script, "delete targetTodo") {
 		t.Fatalf("expected delete in script, got %q", script)
 	}
 }
 
-func TestDeleteAreaCommandWithTitle(t *testing.T) {
+func TestDeleteCommandWithTitle(t *testing.T) {
 	runner := &recordScriptRunner{}
 	app := &App{
 		In:       strings.NewReader(""),
@@ -65,7 +65,7 @@ func TestDeleteAreaCommandWithTitle(t *testing.T) {
 	}
 
 	root := NewRoot(app)
-	root.SetArgs([]string{"delete-area", "Home", "--confirm", "Home"})
+	root.SetArgs([]string{"delete", "Pay bills", "--confirm", "Pay bills"})
 	root.SetOut(app.Out)
 	root.SetErr(app.Err)
 
@@ -74,10 +74,10 @@ func TestDeleteAreaCommandWithTitle(t *testing.T) {
 	}
 
 	script := requireScript(t, runner)
-	if !strings.Contains(script, "area \"Home\"") {
+	if !strings.Contains(script, "to do \"Pay bills\"") {
 		t.Fatalf("expected title lookup in script, got %q", script)
 	}
-	if !strings.Contains(script, "delete targetArea") {
+	if !strings.Contains(script, "delete targetTodo") {
 		t.Fatalf("expected delete in script, got %q", script)
 	}
 }

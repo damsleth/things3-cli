@@ -7,4 +7,6 @@ var errMissingAuthToken = errors.New("Error: Missing Things auth token. Run `thi
 var errMissingID = errors.New("Error: Must specify --id=id")
 var errMissingTitle = errors.New("Error: Must specify title")
 var errMissingAreaTarget = errors.New("Error: Must specify --id=ID or area title")
-var errMissingAreaTags = errors.New("Error: Must specify --tags or --add-tags")
+var errMissingAreaUpdate = errors.New("Error: Must specify --tags, --add-tags, or --title")
+var errMissingTodoTarget = errors.New("Error: Must specify --id=ID or todo title")
+var errMissingProjectTarget = errors.New("Error: Must specify --id=ID or project title")

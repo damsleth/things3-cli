@@ -26,6 +26,10 @@ Adds new todos to Things\.
 Update exiting todo
 .LP
 .TP
+\fIthings delete\fP
+Delete an existing todo\.
+.LP
+.TP
 \fIthings add\-area\fP
 Add new area\.
 .LP
@@ -44,6 +48,10 @@ Delete an existing area\.
 .TP
 \fIthings update\-project\fP
 Update exiting project\.
+.LP
+.TP
+\fIthings delete\-project\fP
+Delete an existing project\.
 .LP
 .TP
 \fIthings show\fP
@@ -458,6 +466,41 @@ things update \-\-id\[eq]8TN1bbz946oBsRBGiQ2XBN \-\-when\[eq]\[dq]2020\-08\-01 1
 .PP
 Authorization: https:\[sl]\[sl]culturedcode\.com\[sl]things\[sl]support\[sl]articles\[sl]2803573\[sl]\[sh]overview\-authorization
 .LP
+.SH things delete [OPTIONS...] [--] [-|TITLE]
+.LP
+.PP
+Deletes an existing todo using AppleScript\. You may be prompted to grant
+Things automation permission to your terminal\.
+.LP
+.PP
+When running interactively, you will be prompted to confirm the deletion\.
+For non\-interactive use, pass \fB--confirm=\fR with the todo ID or title\.
+.LP
+.PP
+The todo can be identified by \fB--id=\fR or by title from the positional
+argument/STDIN\. If \fB-\fR is given as a title, it is read from STDIN\.
+.LP
+.PP
+\fBOPTIONS\fP
+.LP
+.TP
+\fI\-\-id\[eq]ID\fP
+The ID of the todo to delete\. Optional if a title is provided\.
+.LP
+.TP
+\fI\-\-confirm\[eq]VALUE\fP
+Confirm deletion by typing the todo ID or title\. Required in non\-interactive
+mode\. Optional when prompted\.
+.LP
+.PP
+\fBEXAMPLES\fP
+.LP
+.nf
+things delete \-\-id\[eq]ABC123
+
+things delete \[dq]Pay bills\[dq]
+.fi
+.LP
 .SH things add-area [OPTIONS...] [-|TITLE]
 .LP
 .PP
@@ -583,6 +626,10 @@ argument/STDIN\. If \fB-\fR is given as a title, it is read from STDIN\.
 The ID of the area to update\. Optional if a title is provided\.
 .LP
 .TP
+\fI\-\-title\[eq]TITLE\fP
+New title for the area\. Optional\.
+.LP
+.TP
 \fI\-\-tags\[eq]TAG1\[lB],TAG2,TAG3\.\.\.\[rB]\fP
 Comma separated strings corresponding to the titles of tags\. Replaces
 all current tags\. Optional\.
@@ -599,6 +646,8 @@ specified tags to the area\. Optional\.
 things update\-area \-\-id\[eq]ABC123 \-\-tags\[eq]Home,Chores
 
 things update\-area \-\-add\-tags\[eq]Focus \[dq]Work\[dq]
+
+things update\-area \-\-id\[eq]ABC123 \-\-title\[eq]\[dq]New Name\[dq]
 .fi
 .LP
 .SH things delete-area [OPTIONS...] [--] [-|TITLE]
@@ -606,6 +655,10 @@ things update\-area \-\-add\-tags\[eq]Focus \[dq]Work\[dq]
 .PP
 Deletes an existing area using AppleScript\. You may be prompted to grant
 Things automation permission to your terminal\.
+.LP
+.PP
+When running interactively, you will be prompted to confirm the deletion\.
+For non\-interactive use, pass \fB--confirm=\fR with the area ID or title\.
 .LP
 .PP
 The area can be identified by \fB--id=\fR or by title from the positional
@@ -617,6 +670,11 @@ argument/STDIN\. If \fB-\fR is given as a title, it is read from STDIN\.
 .TP
 \fI\-\-id\[eq]ID\fP
 The ID of the area to delete\. Optional if a title is provided\.
+.LP
+.TP
+\fI\-\-confirm\[eq]VALUE\fP
+Confirm deletion by typing the area ID or title\. Required in non\-interactive
+mode\. Optional when prompted\.
 .LP
 .PP
 \fBEXAMPLES\fP
@@ -773,6 +831,41 @@ things update \-\-id\[eq]8TN1bbz946oBsRBGiQ2XBN \-\-reveal
 .LP
 .PP
 Authorization: https:\[sl]\[sl]culturedcode\.com\[sl]things\[sl]support\[sl]articles\[sl]2803573\[sl]\[sh]overview\-authorization
+.LP
+.SH things delete-project [OPTIONS...] [--] [-|TITLE]
+.LP
+.PP
+Deletes an existing project using AppleScript\. You may be prompted to grant
+Things automation permission to your terminal\.
+.LP
+.PP
+When running interactively, you will be prompted to confirm the deletion\.
+For non\-interactive use, pass \fB--confirm=\fR with the project ID or title\.
+.LP
+.PP
+The project can be identified by \fB--id=\fR or by title from the positional
+argument/STDIN\. If \fB-\fR is given as a title, it is read from STDIN\.
+.LP
+.PP
+\fBOPTIONS\fP
+.LP
+.TP
+\fI\-\-id\[eq]ID\fP
+The ID of the project to delete\. Optional if a title is provided\.
+.LP
+.TP
+\fI\-\-confirm\[eq]VALUE\fP
+Confirm deletion by typing the project ID or title\. Required in non\-interactive
+mode\. Optional when prompted\.
+.LP
+.PP
+\fBEXAMPLES\fP
+.LP
+.nf
+things delete\-project \-\-id\[eq]ABC123
+
+things delete\-project \[dq]Launch\[dq]
+.fi
 .LP
 .SH things show [OPTIONS...] [--] [-|QUERY]
 .LP

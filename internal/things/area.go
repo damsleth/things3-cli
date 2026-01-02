@@ -13,6 +13,7 @@ type AddAreaOptions struct {
 // UpdateAreaOptions defines options for update-area.
 type UpdateAreaOptions struct {
 	ID      string
+	Title   string
 	Tags    string
 	AddTags string
 }
@@ -45,26 +46,32 @@ func BuildAddAreaScript(opts AddAreaOptions, rawInput string) (string, error) {
 
 // BuildUpdateAreaScript builds an AppleScript snippet for updating an area.
 func BuildUpdateAreaScript(opts UpdateAreaOptions, rawInput string) (string, error) {
-	title := parseSingleLineTitle(rawInput)
-	if opts.ID == "" && title == "" {
+	targetTitle := parseSingleLineTitle(rawInput)
+	if opts.ID == "" && targetTitle == "" {
 		return "", errMissingAreaTarget
 	}
-	if strings.TrimSpace(opts.Tags) == "" && strings.TrimSpace(opts.AddTags) == "" {
-		return "", errMissingAreaTags
+	if strings.TrimSpace(opts.Title) == "" && strings.TrimSpace(opts.Tags) == "" && strings.TrimSpace(opts.AddTags) == "" {
+		return "", errMissingAreaUpdate
 	}
 
-	target := areaTarget(opts.ID, title)
+	target := areaTarget(opts.ID, targetTitle)
 	var b strings.Builder
 	b.WriteString("tell application \"Things3\"\n")
 	b.WriteString("  set targetArea to ")
 	b.WriteString(target)
 	b.WriteString("\n")
 
+	if strings.TrimSpace(opts.Title) != "" {
+		b.WriteString("  set name of targetArea to \"")
+		b.WriteString(escapeAppleScriptString(strings.TrimSpace(opts.Title)))
+		b.WriteString("\"\n")
+	}
+
 	if strings.TrimSpace(opts.Tags) != "" {
 		b.WriteString("  set tag names of targetArea to \"")
 		b.WriteString(escapeAppleScriptString(opts.Tags))
 		b.WriteString("\"\n")
-	} else {
+	} else if strings.TrimSpace(opts.AddTags) != "" {
 		addTags := strings.TrimSpace(opts.AddTags)
 		b.WriteString("  set currentTags to tag names of targetArea\n")
 		b.WriteString("  if currentTags is missing value then set currentTags to \"\"\n")

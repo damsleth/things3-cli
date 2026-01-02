@@ -14,11 +14,13 @@ DESCRIPTION
 COMMANDS
   add            - add new todo
   update         - update exiting todo
+  delete         - delete an existing todo
   add-area       - add new area
   add-project    - add new project
   update-area    - update exiting area
   delete-area    - delete an area
   update-project - update exiting project
+  delete-project - delete an existing project
   show           - show an area, project, tag, or todo from the Things database
   search         - search tasks in the Things database
   inbox          - list inbox tasks from the Things database
@@ -1359,6 +1361,39 @@ SEE ALSO
   Authorization: https://culturedcode.com/things/support/articles/2803573/#overview-authorization
 `
 
+const deleteHelp = `Usage: things delete [OPTIONS...] [--] [-|TITLE]
+
+NAME
+  things delete - delete an existing todo
+
+SYNOPSIS
+  things delete [OPTIONS...] [--] [-|TITLE]
+
+DESCRIPTION
+  Deletes an existing todo using AppleScript. You may be prompted to grant
+  Things automation permission to your terminal.
+
+  When running interactively, you will be prompted to confirm the deletion.
+  For non-interactive use, pass {{BT}}--confirm={{BT}} with the todo ID or title.
+
+  The todo can be identified by {{BT}}--id={{BT}} or by title from the
+  positional argument/STDIN. If {{BT}}-{{BT}} is given as a title, it is read
+  from STDIN.
+
+OPTIONS
+  --id=ID
+    The ID of the todo to delete. Optional if a title is provided.
+
+  --confirm=VALUE
+    Confirm deletion by typing the todo ID or title. Required in non-interactive
+    mode. Optional when prompted.
+
+EXAMPLES
+  things delete --id=ABC123
+
+  things delete "Pay bills"
+`
+
 const updateAreaHelp = `Usage: things update-area [OPTIONS...] [--] [-|TITLE]
 
 NAME
@@ -1379,6 +1414,9 @@ OPTIONS
   --id=ID
     The ID of the area to update. Optional if a title is provided.
 
+  --title=TITLE
+    New title for the area. Optional.
+
   --tags=TAG1[,TAG2,TAG3...]
     Comma separated strings corresponding to the titles of tags. Replaces
     all current tags. Optional.
@@ -1391,6 +1429,8 @@ EXAMPLES
   things update-area --id=ABC123 --tags=Home,Chores
 
   things update-area --add-tags=Focus "Work"
+
+  things update-area --id=ABC123 --title="New Name"
 `
 
 const deleteAreaHelp = `Usage: things delete-area [OPTIONS...] [--] [-|TITLE]
@@ -1405,6 +1445,9 @@ DESCRIPTION
   Deletes an existing area using AppleScript. You may be prompted to grant
   Things automation permission to your terminal.
 
+  When running interactively, you will be prompted to confirm the deletion.
+  For non-interactive use, pass {{BT}}--confirm={{BT}} with the area ID or title.
+
   The area can be identified by {{BT}}--id={{BT}} or by title from the
   positional argument/STDIN. If {{BT}}-{{BT}} is given as a title, it is read
   from STDIN.
@@ -1413,10 +1456,47 @@ OPTIONS
   --id=ID
     The ID of the area to delete. Optional if a title is provided.
 
+  --confirm=VALUE
+    Confirm deletion by typing the area ID or title. Required in non-interactive
+    mode. Optional when prompted.
+
 EXAMPLES
   things delete-area --id=ABC123
 
   things delete-area "Work"
+`
+
+const deleteProjectHelp = `Usage: things delete-project [OPTIONS...] [--] [-|TITLE]
+
+NAME
+  things delete-project - delete an existing project
+
+SYNOPSIS
+  things delete-project [OPTIONS...] [--] [-|TITLE]
+
+DESCRIPTION
+  Deletes an existing project using AppleScript. You may be prompted to grant
+  Things automation permission to your terminal.
+
+  When running interactively, you will be prompted to confirm the deletion.
+  For non-interactive use, pass {{BT}}--confirm={{BT}} with the project ID or title.
+
+  The project can be identified by {{BT}}--id={{BT}} or by title from the
+  positional argument/STDIN. If {{BT}}-{{BT}} is given as a title, it is read
+  from STDIN.
+
+OPTIONS
+  --id=ID
+    The ID of the project to delete. Optional if a title is provided.
+
+  --confirm=VALUE
+    Confirm deletion by typing the project ID or title. Required in
+    non-interactive mode. Optional when prompted.
+
+EXAMPLES
+  things delete-project --id=ABC123
+
+  things delete-project "Launch"
 `
 
 const updateProjectHelp = `Usage: things update-project [OPTIONS...] [--] [-|TITLE]

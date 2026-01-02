@@ -36,6 +36,7 @@ func NewRoot(app *App) *cobra.Command {
 	cmd.AddCommand(NewAddCommand(app))
 	cmd.AddCommand(NewAddAreaCommand(app))
 	cmd.AddCommand(NewAddProjectCommand(app))
+	cmd.AddCommand(NewDeleteCommand(app))
 	cmd.AddCommand(NewAreasCommand(app))
 	cmd.AddCommand(NewInboxCommand(app))
 	cmd.AddCommand(NewTodayCommand(app))
@@ -57,6 +58,7 @@ func NewRoot(app *App) *cobra.Command {
 	cmd.AddCommand(NewUpdateCommand(app))
 	cmd.AddCommand(NewUpdateAreaCommand(app))
 	cmd.AddCommand(NewDeleteAreaCommand(app))
+	cmd.AddCommand(NewDeleteProjectCommand(app))
 	cmd.AddCommand(NewUpdateProjectCommand(app))
 	cmd.AddCommand(NewShowCommand(app))
 	cmd.AddCommand(NewSearchCommand(app))
@@ -120,12 +122,16 @@ func NewRoot(app *App) *cobra.Command {
 				printHelp(app.Out, formatHelpText(searchHelp, isTTY(app.Out)))
 			case "update":
 				printHelp(app.Out, formatHelpText(updateHelp, isTTY(app.Out)))
+			case "delete":
+				printHelp(app.Out, formatHelpText(deleteHelp, isTTY(app.Out)))
 			case "update-area":
 				printHelp(app.Out, formatHelpText(updateAreaHelp, isTTY(app.Out)))
 			case "delete-area":
 				printHelp(app.Out, formatHelpText(deleteAreaHelp, isTTY(app.Out)))
 			case "update-project":
 				printHelp(app.Out, formatHelpText(updateProjectHelp, isTTY(app.Out)))
+			case "delete-project":
+				printHelp(app.Out, formatHelpText(deleteProjectHelp, isTTY(app.Out)))
 			case "help":
 				printHelp(app.Out, formatHelpText(rootHelp, isTTY(app.Out)))
 			default:
@@ -192,12 +198,16 @@ func NewRoot(app *App) *cobra.Command {
 			printHelp(app.Out, formatHelpText(searchHelp, isTTY(app.Out)))
 		case "update":
 			printHelp(app.Out, formatHelpText(updateHelp, isTTY(app.Out)))
+		case "delete":
+			printHelp(app.Out, formatHelpText(deleteHelp, isTTY(app.Out)))
 		case "update-area":
 			printHelp(app.Out, formatHelpText(updateAreaHelp, isTTY(app.Out)))
 		case "delete-area":
 			printHelp(app.Out, formatHelpText(deleteAreaHelp, isTTY(app.Out)))
 		case "update-project":
 			printHelp(app.Out, formatHelpText(updateProjectHelp, isTTY(app.Out)))
+		case "delete-project":
+			printHelp(app.Out, formatHelpText(deleteProjectHelp, isTTY(app.Out)))
 		default:
 			printHelp(app.Out, formatHelpText(rootHelp, isTTY(app.Out)))
 		}

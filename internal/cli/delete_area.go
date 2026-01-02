@@ -8,6 +8,7 @@ import (
 // NewDeleteAreaCommand builds the delete-area subcommand.
 func NewDeleteAreaCommand(app *App) *cobra.Command {
 	opts := things.DeleteAreaOptions{}
+	var confirm string
 
 	cmd := &cobra.Command{
 		Use:   "delete-area [OPTIONS...] [--] [-|TITLE]",
@@ -15,6 +16,11 @@ func NewDeleteAreaCommand(app *App) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			rawInput, err := readInput(app.In, args)
 			if err != nil {
+				return err
+			}
+
+			target := deleteConfirmTarget(opts.ID, rawInput)
+			if err := confirmDelete(app, "area", target, confirm); err != nil {
 				return err
 			}
 
@@ -28,6 +34,7 @@ func NewDeleteAreaCommand(app *App) *cobra.Command {
 
 	flags := cmd.Flags()
 	flags.StringVar(&opts.ID, "id", "", "ID of the area to delete")
+	flags.StringVar(&confirm, "confirm", "", "Confirm deletion by typing the area ID or title")
 
 	return cmd
 }

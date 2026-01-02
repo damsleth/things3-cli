@@ -18,6 +18,9 @@ https://github.com/ossianhempel/things3-cli#readme
 *things update*
   Update exiting todo
 
+*things delete*
+  Delete an existing todo.
+
 *things add-area*
   Add new area.
 
@@ -32,6 +35,9 @@ https://github.com/ossianhempel/things3-cli#readme
 
 *things update-project*
   Update exiting project.
+
+*things delete-project*
+  Delete an existing project.
 
 *things show*
   Show an area, project, tag, or todo from the Things database.
@@ -395,6 +401,32 @@ This Evening.
 
 Authorization: https://culturedcode.com/things/support/articles/2803573/#overview-authorization
 
+## things delete [OPTIONS...] [--] [-|TITLE]
+
+Deletes an existing todo using AppleScript. You may be prompted to grant
+Things automation permission to your terminal.
+
+When running interactively, you will be prompted to confirm the deletion.
+For non-interactive use, pass `--confirm=` with the todo ID or title.
+
+The todo can be identified by `--id=` or by title from the positional
+argument/STDIN. If `-` is given as a title, it is read from STDIN.
+
+**OPTIONS**
+
+*--id=ID*
+  The ID of the todo to delete. Optional if a title is provided.
+
+*--confirm=VALUE*
+  Confirm deletion by typing the todo ID or title. Required in non-interactive
+  mode. Optional when prompted.
+
+**EXAMPLES**
+
+    things delete --id=ABC123
+
+    things delete "Pay bills"
+
 ## things add-project [OPTIONS...] [-|TITLE]
 
 Adds a new project to Things.
@@ -472,6 +504,9 @@ argument/STDIN. If `-` is given as a title, it is read from STDIN.
 *--id=ID*
   The ID of the area to update. Optional if a title is provided.
 
+*--title=TITLE*
+  New title for the area. Optional.
+
 *--tags=TAG1[,TAG2,TAG3...]*
   Comma separated strings corresponding to the titles of tags. Replaces
   all current tags. Optional.
@@ -486,10 +521,15 @@ argument/STDIN. If `-` is given as a title, it is read from STDIN.
 
     things update-area --add-tags=Focus "Work"
 
+    things update-area --id=ABC123 --title="New Name"
+
 ## things delete-area [OPTIONS...] [--] [-|TITLE]
 
 Deletes an existing area using AppleScript. You may be prompted to grant
 Things automation permission to your terminal.
+
+When running interactively, you will be prompted to confirm the deletion.
+For non-interactive use, pass `--confirm=` with the area ID or title.
 
 The area can be identified by `--id=` or by title from the positional
 argument/STDIN. If `-` is given as a title, it is read from STDIN.
@@ -498,6 +538,10 @@ argument/STDIN. If `-` is given as a title, it is read from STDIN.
 
 *--id=ID*
   The ID of the area to delete. Optional if a title is provided.
+
+*--confirm=VALUE*
+  Confirm deletion by typing the area ID or title. Required in non-interactive
+  mode. Optional when prompted.
 
 **EXAMPLES**
 
@@ -625,6 +669,32 @@ precedence over the `--notes=` option.
 **SEE ALSO**
 
 Authorization: https://culturedcode.com/things/support/articles/2803573/#overview-authorization
+
+## things delete-project [OPTIONS...] [--] [-|TITLE]
+
+Deletes an existing project using AppleScript. You may be prompted to grant
+Things automation permission to your terminal.
+
+When running interactively, you will be prompted to confirm the deletion.
+For non-interactive use, pass `--confirm=` with the project ID or title.
+
+The project can be identified by `--id=` or by title from the positional
+argument/STDIN. If `-` is given as a title, it is read from STDIN.
+
+**OPTIONS**
+
+*--id=ID*
+  The ID of the project to delete. Optional if a title is provided.
+
+*--confirm=VALUE*
+  Confirm deletion by typing the project ID or title. Required in non-interactive
+  mode. Optional when prompted.
+
+**EXAMPLES**
+
+    things delete-project --id=ABC123
+
+    things delete-project "Launch"
 
 ## things show [OPTIONS...] [--] [-|QUERY]
 
