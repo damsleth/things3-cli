@@ -5,7 +5,7 @@ import "testing"
 func TestUpdateAreaRequiresTags(t *testing.T) {
 	_, errOut, code := runThings(t, "", "update-area", "--id=1")
 	requireFailure(t, code)
-	assertContains(t, errOut, "Must specify --tags or --add-tags")
+	assertContains(t, errOut, "Must specify --tags, --add-tags, or --title")
 }
 
 func TestUpdateAreaAddTagsOption(t *testing.T) {
