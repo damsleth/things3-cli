@@ -3,6 +3,7 @@ package integration_test
 import "testing"
 
 func TestUpdateAuthTokenRequired(t *testing.T) {
+	t.Setenv("THINGS_AUTH_TOKEN", "")
 	_, errOut, code := runThings(t, "", "update")
 	requireFailure(t, code)
 	assertContains(t, errOut, "Missing Things auth token")
@@ -18,6 +19,12 @@ func TestUpdateWhenOption(t *testing.T) {
 	out, _, code := runThings(t, "", "update", "--auth-token=token", "--id=1", "--when=2021-05-20")
 	requireSuccess(t, code)
 	assertContains(t, out, "when=2021-05-20")
+}
+
+func TestUpdateLaterOption(t *testing.T) {
+	out, _, code := runThings(t, "", "update", "--auth-token=token", "--id=1", "--later")
+	requireSuccess(t, code)
+	assertContains(t, out, "when=evening")
 }
 
 func TestUpdateDeadlineOption(t *testing.T) {

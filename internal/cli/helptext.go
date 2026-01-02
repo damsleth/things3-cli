@@ -14,7 +14,9 @@ DESCRIPTION
 COMMANDS
   add            - add new todo
   update         - update exiting todo
+  add-area       - add new area
   add-project    - add new project
+  update-area    - update exiting area
   update-project - update exiting project
   show           - show an area, project, tag, or todo from the Things database
   search         - search tasks in the Things database
@@ -981,6 +983,33 @@ EXAMPLES
     "Add a pending todo to the quick entry window"
 `
 
+const addAreaHelp = `Usage: things add-area [OPTIONS...] [-|TITLE]
+
+NAME
+  things add-area - add new area
+
+SYNOPSIS
+  things add-area [OPTIONS...] [-|TITLE]
+
+DESCRIPTION
+  Adds a new area to Things using AppleScript. You may be prompted to grant
+  Things automation permission to your terminal.
+
+  If {{BT}}-{{BT}} is given as a title, it is read from STDIN. When titles have
+  multiple lines of text, the first is set as the area's title.
+
+OPTIONS
+  --tags=TAG1[,TAG2,TAG3...]
+    Comma separated strings corresponding to the titles of tags. Optional.
+
+EXAMPLES
+  things add-area "Health"
+
+  things add-area --tags=Personal,Health "Health"
+
+  echo "Area from STDIN" | things add-area -
+`
+
 const addProjectHelp = `Usage: things add-project [OPTIONS...] [-|TITLE]
 
 NAME
@@ -1165,6 +1194,9 @@ DESCRIPTION
   remaining lines are set as the todo's notes. Notes set this way take
   precedence over the {{BT}}--notes={{BT}} option.
 
+  Scheduling note: use {{BT}}--when=someday{{BT}} for Someday, or
+  {{BT}}--later{{BT}} for This Evening.
+
 OPTIONS
   --auth-token=TOKEN
     The Things URL scheme authorization token. Required. See below for more
@@ -1190,6 +1222,10 @@ OPTIONS
     evening, someday, a date string, or a date time string. Including a time
     adds a reminder for that time. The time component is ignored if someday
     is specified. This field cannot be updated on repeating todo.
+    Optional.
+
+  --later
+    Move the todo to This Evening (alias for {{BT}}--when=evening{{BT}}).
     Optional.
 
   --deadline=DATE
@@ -1288,6 +1324,40 @@ EXAMPLES
 
 SEE ALSO
   Authorization: https://culturedcode.com/things/support/articles/2803573/#overview-authorization
+`
+
+const updateAreaHelp = `Usage: things update-area [OPTIONS...] [--] [-|TITLE]
+
+NAME
+  things update-area - update an existing area
+
+SYNOPSIS
+  things update-area [OPTIONS...] [--] [-|TITLE]
+
+DESCRIPTION
+  Updates an existing area using AppleScript. You may be prompted to grant
+  Things automation permission to your terminal.
+
+  The area can be identified by {{BT}}--id={{BT}} or by title from the
+  positional argument/STDIN. If {{BT}}-{{BT}} is given as a title, it is read
+  from STDIN.
+
+OPTIONS
+  --id=ID
+    The ID of the area to update. Optional if a title is provided.
+
+  --tags=TAG1[,TAG2,TAG3...]
+    Comma separated strings corresponding to the titles of tags. Replaces
+    all current tags. Optional.
+
+  --add-tags=TAG1[,TAG2,TAG3...]
+    Comma separated strings corresponding to the titles of tags. Adds the
+    specified tags to the area. Optional.
+
+EXAMPLES
+  things update-area --id=ABC123 --tags=Home,Chores
+
+  things update-area --add-tags=Focus "Work"
 `
 
 const updateProjectHelp = `Usage: things update-project [OPTIONS...] [--] [-|TITLE]

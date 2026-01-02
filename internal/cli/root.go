@@ -34,6 +34,7 @@ func NewRoot(app *App) *cobra.Command {
 	cmd.PersistentFlags().BoolVarP(&versionFlag, "version", "V", false, "Print version information")
 
 	cmd.AddCommand(NewAddCommand(app))
+	cmd.AddCommand(NewAddAreaCommand(app))
 	cmd.AddCommand(NewAddProjectCommand(app))
 	cmd.AddCommand(NewAreasCommand(app))
 	cmd.AddCommand(NewInboxCommand(app))
@@ -53,6 +54,7 @@ func NewRoot(app *App) *cobra.Command {
 	cmd.AddCommand(NewTagsCommand(app))
 	cmd.AddCommand(NewTasksCommand(app))
 	cmd.AddCommand(NewUpdateCommand(app))
+	cmd.AddCommand(NewUpdateAreaCommand(app))
 	cmd.AddCommand(NewUpdateProjectCommand(app))
 	cmd.AddCommand(NewShowCommand(app))
 	cmd.AddCommand(NewSearchCommand(app))
@@ -68,7 +70,11 @@ func NewRoot(app *App) *cobra.Command {
 			switch args[0] {
 			case "add":
 				printHelp(app.Out, formatHelpText(addHelp, isTTY(app.Out)))
+			case "add-area", "create-area":
+				printHelp(app.Out, formatHelpText(addAreaHelp, isTTY(app.Out)))
 			case "add-project":
+				printHelp(app.Out, formatHelpText(addProjectHelp, isTTY(app.Out)))
+			case "create-project":
 				printHelp(app.Out, formatHelpText(addProjectHelp, isTTY(app.Out)))
 			case "areas":
 				printHelp(app.Out, formatHelpText(areasHelp, isTTY(app.Out)))
@@ -110,6 +116,8 @@ func NewRoot(app *App) *cobra.Command {
 				printHelp(app.Out, formatHelpText(searchHelp, isTTY(app.Out)))
 			case "update":
 				printHelp(app.Out, formatHelpText(updateHelp, isTTY(app.Out)))
+			case "update-area":
+				printHelp(app.Out, formatHelpText(updateAreaHelp, isTTY(app.Out)))
 			case "update-project":
 				printHelp(app.Out, formatHelpText(updateProjectHelp, isTTY(app.Out)))
 			case "help":
@@ -128,8 +136,14 @@ func NewRoot(app *App) *cobra.Command {
 			printHelp(app.Out, formatHelpText(rootHelp, isTTY(app.Out)))
 		case "add":
 			printHelp(app.Out, formatHelpText(addHelp, isTTY(app.Out)))
+		case "add-area":
+			printHelp(app.Out, formatHelpText(addAreaHelp, isTTY(app.Out)))
 		case "add-project":
 			printHelp(app.Out, formatHelpText(addProjectHelp, isTTY(app.Out)))
+		case "create-project":
+			printHelp(app.Out, formatHelpText(addProjectHelp, isTTY(app.Out)))
+		case "create-area":
+			printHelp(app.Out, formatHelpText(addAreaHelp, isTTY(app.Out)))
 		case "areas":
 			printHelp(app.Out, formatHelpText(areasHelp, isTTY(app.Out)))
 		case "inbox":
@@ -170,6 +184,8 @@ func NewRoot(app *App) *cobra.Command {
 			printHelp(app.Out, formatHelpText(searchHelp, isTTY(app.Out)))
 		case "update":
 			printHelp(app.Out, formatHelpText(updateHelp, isTTY(app.Out)))
+		case "update-area":
+			printHelp(app.Out, formatHelpText(updateAreaHelp, isTTY(app.Out)))
 		case "update-project":
 			printHelp(app.Out, formatHelpText(updateProjectHelp, isTTY(app.Out)))
 		default:

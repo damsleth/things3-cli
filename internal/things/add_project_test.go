@@ -46,6 +46,13 @@ func TestBuildAddProjectURLTodosJoin(t *testing.T) {
 	}
 }
 
+func TestBuildAddProjectURLTags(t *testing.T) {
+	url := BuildAddProjectURL(AddProjectOptions{Tags: "Work,Home"}, "Project")
+	if !contains(url, "tags=Work%2CHome") {
+		t.Fatalf("expected tags in %q", url)
+	}
+}
+
 func TestBuildAddProjectURLTrailingAmpersand(t *testing.T) {
 	url := BuildAddProjectURL(AddProjectOptions{AreaID: "123"}, "Title")
 	if !strings.HasSuffix(url, "&") {

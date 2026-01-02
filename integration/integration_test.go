@@ -66,7 +66,7 @@ func runThings(t *testing.T, stdin string, args ...string) (string, string, int)
 	var outBuf, errBuf bytes.Buffer
 	cmd.Stdout = &outBuf
 	cmd.Stderr = &errBuf
-	cmd.Env = append(os.Environ(), "OPEN=echo")
+	cmd.Env = append(os.Environ(), "OPEN=echo", "OSASCRIPT=echo")
 
 	err := cmd.Run()
 	code := 0

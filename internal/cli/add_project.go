@@ -10,8 +10,9 @@ func NewAddProjectCommand(app *App) *cobra.Command {
 	opts := things.AddProjectOptions{}
 
 	cmd := &cobra.Command{
-		Use:   "add-project [OPTIONS...] [-|TITLE]",
-		Short: "Add a new project",
+		Use:     "add-project [OPTIONS...] [-|TITLE]",
+		Aliases: []string{"create-project"},
+		Short:   "Add a new project",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			rawInput, err := readInput(app.In, args)
 			if err != nil {

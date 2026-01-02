@@ -119,3 +119,9 @@ func TestAddProjectTitleAndNotesFromStdin(t *testing.T) {
 	requireSuccess(t, code)
 	assertContains(t, out, "title="+enc("New Project")+"&notes="+enc("The notes"))
 }
+
+func TestCreateProjectAlias(t *testing.T) {
+	out, _, code := runThings(t, "", "create-project", "Alias Project")
+	requireSuccess(t, code)
+	assertContains(t, out, "title="+enc("Alias Project"))
+}

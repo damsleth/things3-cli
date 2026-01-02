@@ -79,6 +79,17 @@ func TestBuildUpdateProjectURLTodosJoin(t *testing.T) {
 	}
 }
 
+func TestBuildUpdateProjectURLAddTags(t *testing.T) {
+	opts := UpdateProjectOptions{AuthToken: "tok", ID: "id", AddTags: "Focus,Home"}
+	url, err := BuildUpdateProjectURL(opts, "")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if !contains(url, "add-tags=Focus%2CHome") {
+		t.Fatalf("expected add-tags in %q", url)
+	}
+}
+
 func TestBuildUpdateProjectURLTrailingAmpersand(t *testing.T) {
 	url, err := BuildUpdateProjectURL(UpdateProjectOptions{AuthToken: "tok", ID: "id", Notes: "Notes"}, "")
 	if err != nil {

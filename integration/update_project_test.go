@@ -3,6 +3,7 @@ package integration_test
 import "testing"
 
 func TestUpdateProjectAuthTokenRequired(t *testing.T) {
+	t.Setenv("THINGS_AUTH_TOKEN", "")
 	_, errOut, code := runThings(t, "", "update-project")
 	requireFailure(t, code)
 	assertContains(t, errOut, "Missing Things auth token")

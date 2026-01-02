@@ -27,7 +27,9 @@ make install
 
 - `add`              Add a new todo
 - `update`           Update an existing todo (requires auth token)
+- `add-area`         Add a new area
 - `add-project`      Add a new project
+- `update-area`      Update an existing area
 - `update-project`   Update an existing project (requires auth token)
 - `show`             Show an area, project, tag, or todo from the database
 - `search`           Search tasks in the database
@@ -74,3 +76,8 @@ grant your terminal Full Disk Access.
   to bring it to the front, or `--dry-run` to print the URL without opening.
 - For update operations you can set `THINGS_AUTH_TOKEN` to avoid passing
   `--auth-token` every time.
+- Area creation/updates use AppleScript and require Things automation
+  permission for your terminal (you may see a macOS prompt).
+- Aliases: `create-project` -> `add-project`, `create-area` -> `add-area`.
+- Scheduling: use `--when=someday` to move to Someday; use `update --later`
+  (or `--when=evening`) to move to This Evening.

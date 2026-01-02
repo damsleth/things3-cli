@@ -79,6 +79,31 @@ func TestBuildUpdateURLChecklistJoin(t *testing.T) {
 	}
 }
 
+func TestBuildUpdateURLLaterSetsEvening(t *testing.T) {
+	opts := UpdateOptions{AuthToken: "tok", ID: "id", Later: true}
+	url, err := BuildUpdateURL(opts, "")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if !contains(url, "when=evening") {
+		t.Fatalf("expected when=evening in %q", url)
+	}
+}
+
+func TestBuildUpdateURLWhenOverridesLater(t *testing.T) {
+	opts := UpdateOptions{AuthToken: "tok", ID: "id", Later: true, When: "today"}
+	url, err := BuildUpdateURL(opts, "")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if !contains(url, "when=today") {
+		t.Fatalf("expected when=today in %q", url)
+	}
+	if contains(url, "when=evening") {
+		t.Fatalf("did not expect when=evening in %q", url)
+	}
+}
+
 func TestBuildUpdateURLTrailingAmpersand(t *testing.T) {
 	url, err := BuildUpdateURL(UpdateOptions{AuthToken: "tok", ID: "id", Notes: "Notes"}, "")
 	if err != nil {

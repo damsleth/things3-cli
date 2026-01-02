@@ -18,8 +18,14 @@ https://github.com/ossianhempel/things3-cli#readme
 *things update*
   Update exiting todo
 
+*things add-area*
+  Add new area.
+
 *things add-project*
   Add new project.
+
+*things update-area*
+  Update exiting area.
 
 *things update-project*
   Update exiting project.
@@ -201,6 +207,29 @@ are set as the todo's notes. Notes set this way take precedence over the
     things add --show-quick-entry \
       "Add a pending todo to the quick entry window"
 
+## things add-area [OPTIONS...] [--] [-|TITLE]
+
+Adds a new area using AppleScript. You may be prompted to grant Things
+automation permission to your terminal.
+
+If `-` is given as a title, it is read from STDIN. When titles have multiple
+lines of text, the first is set as the area's title.
+
+Alias: `create-area`.
+
+**OPTIONS**
+
+*--tags=TAG1[,TAG2,TAG3...]*
+  Comma separated strings corresponding to the titles of tags. Optional.
+
+**EXAMPLES**
+
+    things add-area "Health"
+
+    things add-area --tags=Personal,Health "Health"
+
+    echo "Area from STDIN" | things add-area -
+
 ## things update [OPTIONS...] [--] [-|TITLE]
 
 Updates an existing todo identified by `--id=`.
@@ -209,6 +238,9 @@ If `-` is given as a title, it is read from STDIN. When titles have
 multiple lines of text, the first is set as the todo's title and the
 remaining lines are set as the todo's notes. Notes set this way take
 precedence over the `--notes=` option.
+
+Scheduling note: use `--when=someday` for Someday, or `--later` for
+This Evening.
 
 **OPTIONS**
 
@@ -237,6 +269,9 @@ precedence over the `--notes=` option.
   adds a reminder for that time. The time component is ignored if someday
   is specified. This field cannot be updated on repeating todo.
   Optional.
+
+*--later*
+  Move the todo to This Evening (alias for `--when=evening`). Optional.
 
 *--deadline=DATE*
   The deadline to apply to the todo. This field cannot be updated on
@@ -346,6 +381,8 @@ multiple lines of text, the first is set as the todo's title and the
 remaining lines are set as the todo's notes. Notes set this way take
 precedence over the `--notes=` option.
 
+Alias: `create-project`.
+
 **OPTIONS**
 
 *--area-id=AREAID*
@@ -398,6 +435,33 @@ precedence over the `--notes=` option.
 **EXAMPLES**
 
     things add-project "Take over the world"
+
+## things update-area [OPTIONS...] [--] [-|TITLE]
+
+Updates an existing area using AppleScript. You may be prompted to grant
+Things automation permission to your terminal.
+
+The area can be identified by `--id=` or by title from the positional
+argument/STDIN. If `-` is given as a title, it is read from STDIN.
+
+**OPTIONS**
+
+*--id=ID*
+  The ID of the area to update. Optional if a title is provided.
+
+*--tags=TAG1[,TAG2,TAG3...]*
+  Comma separated strings corresponding to the titles of tags. Replaces
+  all current tags. Optional.
+
+*--add-tags=TAG1[,TAG2,TAG3...]*
+  Comma separated strings corresponding to the titles of tags. Adds the
+  specified tags to the area. Optional.
+
+**EXAMPLES**
+
+    things update-area --id=ABC123 --tags=Home,Chores
+
+    things update-area --add-tags=Focus "Work"
 
 ## things update-project [OPTIONS...] [--] [-|TITLE]
 
