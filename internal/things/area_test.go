@@ -76,3 +76,39 @@ func TestBuildUpdateAreaScriptReplaceTags(t *testing.T) {
 		t.Fatalf("did not expect add-tags flow in %q", script)
 	}
 }
+
+func TestBuildDeleteAreaScriptRequiresTarget(t *testing.T) {
+	_, err := BuildDeleteAreaScript(DeleteAreaOptions{}, "")
+	if err == nil {
+		t.Fatalf("expected error")
+	}
+	if err.Error() != "Error: Must specify --id=ID or area title" {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestBuildDeleteAreaScriptWithID(t *testing.T) {
+	script, err := BuildDeleteAreaScript(DeleteAreaOptions{ID: "123"}, "")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if !contains(script, "first area whose id is \"123\"") {
+		t.Fatalf("expected id lookup in %q", script)
+	}
+	if !contains(script, "delete targetArea") {
+		t.Fatalf("expected delete in %q", script)
+	}
+}
+
+func TestBuildDeleteAreaScriptWithTitle(t *testing.T) {
+	script, err := BuildDeleteAreaScript(DeleteAreaOptions{}, "Home")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if !contains(script, "area \"Home\"") {
+		t.Fatalf("expected title lookup in %q", script)
+	}
+	if !contains(script, "delete targetArea") {
+		t.Fatalf("expected delete in %q", script)
+	}
+}

@@ -17,6 +17,11 @@ type UpdateAreaOptions struct {
 	AddTags string
 }
 
+// DeleteAreaOptions defines options for delete-area.
+type DeleteAreaOptions struct {
+	ID string
+}
+
 // BuildAddAreaScript builds an AppleScript snippet for creating an area.
 func BuildAddAreaScript(opts AddAreaOptions, rawInput string) (string, error) {
 	title := parseSingleLineTitle(rawInput)
@@ -74,6 +79,24 @@ func BuildUpdateAreaScript(opts UpdateAreaOptions, rawInput string) (string, err
 		b.WriteString("  end if\n")
 	}
 
+	b.WriteString("end tell")
+	return b.String(), nil
+}
+
+// BuildDeleteAreaScript builds an AppleScript snippet for deleting an area.
+func BuildDeleteAreaScript(opts DeleteAreaOptions, rawInput string) (string, error) {
+	title := parseSingleLineTitle(rawInput)
+	if opts.ID == "" && title == "" {
+		return "", errMissingAreaTarget
+	}
+
+	target := areaTarget(opts.ID, title)
+	var b strings.Builder
+	b.WriteString("tell application \"Things3\"\n")
+	b.WriteString("  set targetArea to ")
+	b.WriteString(target)
+	b.WriteString("\n")
+	b.WriteString("  delete targetArea\n")
 	b.WriteString("end tell")
 	return b.String(), nil
 }

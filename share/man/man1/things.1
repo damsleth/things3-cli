@@ -26,8 +26,20 @@ Adds new todos to Things\.
 Update exiting todo
 .LP
 .TP
+\fIthings add\-area\fP
+Add new area\.
+.LP
+.TP
 \fIthings add\-project\fP
 Add new project\.
+.LP
+.TP
+\fIthings update\-area\fP
+Update exiting area\.
+.LP
+.TP
+\fIthings delete\-area\fP
+Delete an existing area\.
 .LP
 .TP
 \fIthings update\-project\fP
@@ -446,6 +458,34 @@ things update \-\-id\[eq]8TN1bbz946oBsRBGiQ2XBN \-\-when\[eq]\[dq]2020\-08\-01 1
 .PP
 Authorization: https:\[sl]\[sl]culturedcode\.com\[sl]things\[sl]support\[sl]articles\[sl]2803573\[sl]\[sh]overview\-authorization
 .LP
+.SH things add-area [OPTIONS...] [-|TITLE]
+.LP
+.PP
+Adds a new area to Things using AppleScript\. You may be prompted to grant
+Things automation permission to your terminal\.
+.LP
+.PP
+If \fB-\fR is given as a title, it is read from STDIN\. When titles have
+multiple lines of text, the first is set as the area\[cq]s title\.
+.LP
+.PP
+\fBOPTIONS\fP
+.LP
+.TP
+\fI\-\-tags\[eq]TAG1\[lB],TAG2,TAG3\.\.\.\[rB]\fP
+Comma separated strings corresponding to the titles of tags\. Optional\.
+.LP
+.PP
+\fBEXAMPLES\fP
+.LP
+.nf
+things add\-area \[dq]Health\[dq]
+
+things add\-area \-\-tags\[eq]Personal,Health \[dq]Health\[dq]
+
+echo \[dq]Area from STDIN\[dq] \[or] things add\-area \-
+.fi
+.LP
 .SH things add-project [OPTIONS...] [-|TITLE]
 .LP
 .PP
@@ -523,6 +563,68 @@ to add multiple todos\. Optional\.
 .LP
 .nf
 things add\-project \[dq]Take over the world\[dq]
+.fi
+.LP
+.SH things update-area [OPTIONS...] [--] [-|TITLE]
+.LP
+.PP
+Updates an existing area using AppleScript\. You may be prompted to grant
+Things automation permission to your terminal\.
+.LP
+.PP
+The area can be identified by \fB--id=\fR or by title from the positional
+argument/STDIN\. If \fB-\fR is given as a title, it is read from STDIN\.
+.LP
+.PP
+\fBOPTIONS\fP
+.LP
+.TP
+\fI\-\-id\[eq]ID\fP
+The ID of the area to update\. Optional if a title is provided\.
+.LP
+.TP
+\fI\-\-tags\[eq]TAG1\[lB],TAG2,TAG3\.\.\.\[rB]\fP
+Comma separated strings corresponding to the titles of tags\. Replaces
+all current tags\. Optional\.
+.LP
+.TP
+\fI\-\-add\-tags\[eq]TAG1\[lB],TAG2,TAG3\.\.\.\[rB]\fP
+Comma separated strings corresponding to the titles of tags\. Adds the
+specified tags to the area\. Optional\.
+.LP
+.PP
+\fBEXAMPLES\fP
+.LP
+.nf
+things update\-area \-\-id\[eq]ABC123 \-\-tags\[eq]Home,Chores
+
+things update\-area \-\-add\-tags\[eq]Focus \[dq]Work\[dq]
+.fi
+.LP
+.SH things delete-area [OPTIONS...] [--] [-|TITLE]
+.LP
+.PP
+Deletes an existing area using AppleScript\. You may be prompted to grant
+Things automation permission to your terminal\.
+.LP
+.PP
+The area can be identified by \fB--id=\fR or by title from the positional
+argument/STDIN\. If \fB-\fR is given as a title, it is read from STDIN\.
+.LP
+.PP
+\fBOPTIONS\fP
+.LP
+.TP
+\fI\-\-id\[eq]ID\fP
+The ID of the area to delete\. Optional if a title is provided\.
+.LP
+.PP
+\fBEXAMPLES\fP
+.LP
+.nf
+things delete\-area \-\-id\[eq]ABC123
+
+things delete\-area \[dq]Work\[dq]
 .fi
 .LP
 .SH things update-project [OPTIONS...] [--] [-|TITLE]

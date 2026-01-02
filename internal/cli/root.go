@@ -56,6 +56,7 @@ func NewRoot(app *App) *cobra.Command {
 	cmd.AddCommand(NewAuthCommand(app))
 	cmd.AddCommand(NewUpdateCommand(app))
 	cmd.AddCommand(NewUpdateAreaCommand(app))
+	cmd.AddCommand(NewDeleteAreaCommand(app))
 	cmd.AddCommand(NewUpdateProjectCommand(app))
 	cmd.AddCommand(NewShowCommand(app))
 	cmd.AddCommand(NewSearchCommand(app))
@@ -121,6 +122,8 @@ func NewRoot(app *App) *cobra.Command {
 				printHelp(app.Out, formatHelpText(updateHelp, isTTY(app.Out)))
 			case "update-area":
 				printHelp(app.Out, formatHelpText(updateAreaHelp, isTTY(app.Out)))
+			case "delete-area":
+				printHelp(app.Out, formatHelpText(deleteAreaHelp, isTTY(app.Out)))
 			case "update-project":
 				printHelp(app.Out, formatHelpText(updateProjectHelp, isTTY(app.Out)))
 			case "help":
@@ -191,6 +194,8 @@ func NewRoot(app *App) *cobra.Command {
 			printHelp(app.Out, formatHelpText(updateHelp, isTTY(app.Out)))
 		case "update-area":
 			printHelp(app.Out, formatHelpText(updateAreaHelp, isTTY(app.Out)))
+		case "delete-area":
+			printHelp(app.Out, formatHelpText(deleteAreaHelp, isTTY(app.Out)))
 		case "update-project":
 			printHelp(app.Out, formatHelpText(updateProjectHelp, isTTY(app.Out)))
 		default:

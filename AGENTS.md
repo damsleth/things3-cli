@@ -39,3 +39,6 @@
 - Update commands require `THINGS_AUTH_TOKEN`; see README for setup.
 - DB reads may require Full Disk Access for your terminal.
 - Area/project automation uses AppleScript and may trigger macOS prompts.
+
+## Agent Scripts / Skills Sync
+- After CLI changes, update the Things 3 CLI skill in `../agent-scripts/skills` to keep agent guidance in sync.

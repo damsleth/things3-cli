@@ -27,6 +27,9 @@ https://github.com/ossianhempel/things3-cli#readme
 *things update-area*
   Update exiting area.
 
+*things delete-area*
+  Delete an existing area.
+
 *things update-project*
   Update exiting project.
 
@@ -482,6 +485,25 @@ argument/STDIN. If `-` is given as a title, it is read from STDIN.
     things update-area --id=ABC123 --tags=Home,Chores
 
     things update-area --add-tags=Focus "Work"
+
+## things delete-area [OPTIONS...] [--] [-|TITLE]
+
+Deletes an existing area using AppleScript. You may be prompted to grant
+Things automation permission to your terminal.
+
+The area can be identified by `--id=` or by title from the positional
+argument/STDIN. If `-` is given as a title, it is read from STDIN.
+
+**OPTIONS**
+
+*--id=ID*
+  The ID of the area to delete. Optional if a title is provided.
+
+**EXAMPLES**
+
+    things delete-area --id=ABC123
+
+    things delete-area "Work"
 
 ## things update-project [OPTIONS...] [--] [-|TITLE]
 

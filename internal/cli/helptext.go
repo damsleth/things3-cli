@@ -17,6 +17,7 @@ COMMANDS
   add-area       - add new area
   add-project    - add new project
   update-area    - update exiting area
+  delete-area    - delete an area
   update-project - update exiting project
   show           - show an area, project, tag, or todo from the Things database
   search         - search tasks in the Things database
@@ -1390,6 +1391,32 @@ EXAMPLES
   things update-area --id=ABC123 --tags=Home,Chores
 
   things update-area --add-tags=Focus "Work"
+`
+
+const deleteAreaHelp = `Usage: things delete-area [OPTIONS...] [--] [-|TITLE]
+
+NAME
+  things delete-area - delete an existing area
+
+SYNOPSIS
+  things delete-area [OPTIONS...] [--] [-|TITLE]
+
+DESCRIPTION
+  Deletes an existing area using AppleScript. You may be prompted to grant
+  Things automation permission to your terminal.
+
+  The area can be identified by {{BT}}--id={{BT}} or by title from the
+  positional argument/STDIN. If {{BT}}-{{BT}} is given as a title, it is read
+  from STDIN.
+
+OPTIONS
+  --id=ID
+    The ID of the area to delete. Optional if a title is provided.
+
+EXAMPLES
+  things delete-area --id=ABC123
+
+  things delete-area "Work"
 `
 
 const updateProjectHelp = `Usage: things update-project [OPTIONS...] [--] [-|TITLE]
