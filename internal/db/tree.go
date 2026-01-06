@@ -123,10 +123,10 @@ func (s *Store) projectChildren(projectID string, filter TaskFilter) ([]TreeItem
 	}
 
 	for _, heading := range headings {
-			taskFilter := filter
-			taskFilter.ProjectID = projectID
-			taskFilter.Types = []int{TaskTypeTodo}
-			tasks, err := s.queryTasks("t.project = ? AND t.heading = ?", []any{projectID, heading.UUID}, taskFilter, "")
+		taskFilter := filter
+		taskFilter.ProjectID = projectID
+		taskFilter.Types = []int{TaskTypeTodo}
+		tasks, err := s.queryTasks("t.project = ? AND t.heading = ?", []any{projectID, heading.UUID}, taskFilter, "")
 		if err != nil {
 			return nil, err
 		}
@@ -191,7 +191,11 @@ func (s *Store) queryTaskItems(taskType int, where string, args []any, filter Ta
 		b.WriteString(" AND EXISTS (SELECT 1 FROM TMTaskTag tt WHERE tt.tasks = t.uuid AND tt.tags = ?)")
 		params = append(params, filter.TagID)
 	}
-	b.WriteString(" AND t.rt1_recurrenceRule IS NULL")
+	if filter.RepeatingOnly {
+		b.WriteString(" AND t.rt1_recurrenceRule IS NOT NULL")
+	} else if !filter.IncludeRepeating {
+		b.WriteString(" AND t.rt1_recurrenceRule IS NULL")
+	}
 
 	if order == "" {
 		order = "t.\"index\""

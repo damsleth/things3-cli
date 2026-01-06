@@ -54,6 +54,9 @@ https://github.com/ossianhempel/things3-cli#readme
 *things upcoming*
   List upcoming tasks from the Things database.
 
+*things repeating*
+  List repeating tasks from the Things database.
+
 *things anytime*
   List anytime tasks from the Things database.
 
@@ -142,7 +145,14 @@ lines of text, the first is set as the todo's title and the remaining lines
 are set as the todo's notes. Notes set this way take precedence over the
 `--notes=` option.
 
+Repeating todos are created via the Things database and require a single
+explicit title (no `--titles`, `--use-clipboard`, or quick entry).
+
 **OPTIONS**
+
+*--db=PATH*
+  Path to the Things database. Overrides the THINGSDB environment variable.
+  Used for repeat operations.
 
 *--canceled*, *--cancelled*
    Whether or not the todo should be set to canceled. Default: false. Takes
@@ -201,6 +211,24 @@ are set as the todo's notes. Notes set this way take precedence over the
   string, or a date time string. Using a date time string adds a reminder
   for that time. The time component is ignored if anytime or someday is
   specified.
+
+*--repeat=UNIT*
+  Create a repeating template. Units: day, week, month, year.
+
+*--repeat-mode=MODE*
+  Repeat mode: after-completion (default) or schedule.
+
+*--repeat-every=N*
+  Repeat every N units. Default: 1.
+
+*--repeat-start=DATE*
+  Anchor date for the repeat rule (YYYY-MM-DD). Defaults to today.
+
+*--repeat-until=DATE*
+  Stop repeating after the given date (YYYY-MM-DD). Optional.
+
+*--repeat-deadline=DAYS*
+  Add repeating deadlines; each copy appears in Today DAYS earlier.
 
 *--titles=TITLE1[,TITLE2,TITLE3...]*
   Use instead of title to create multiple todos. Takes priority over title
@@ -372,6 +400,27 @@ This Evening.
   Add checklist items to the end of the list of checklist items in the
   todo (maximum of 100). Can be specified multiple times on the command
   line.
+
+*--repeat=UNIT*
+  Set a repeating schedule. Units: day, week, month, year.
+
+*--repeat-mode=MODE*
+  Repeat mode: after-completion (default) or schedule.
+
+*--repeat-every=N*
+  Repeat every N units. Default: 1.
+
+*--repeat-start=DATE*
+  Anchor date for the repeat rule (YYYY-MM-DD). Defaults to today.
+
+*--repeat-until=DATE*
+  Stop repeating after the given date (YYYY-MM-DD). Optional.
+
+*--repeat-deadline=DAYS*
+  Add repeating deadlines; each copy appears in Today DAYS earlier.
+
+*--repeat-clear*
+  Remove the repeating schedule for the todo.
 
 **EXAMPLES**
 
@@ -583,12 +632,10 @@ precedence over the `--notes=` option.
   Set the when field of a project. Possible values: today, tomorrow,
   evening, someday, a date string, or a date time string. Including a time
   adds a reminder for that time. The time component is ignored if someday
-  is specified. This field cannot be updated on repeating projects.
-  Optional.
+  is specified. Optional.
 
 *--deadline=DATE*
-  The deadline to apply to the project. This field cannot be updated on
-  repeating projects. Optional.
+  The deadline to apply to the project. Optional.
 
 *--tags=TAG1[,TAG2,TAG3...]*
   Comma separated strings corresponding to the titles of tags. Replaces
@@ -612,15 +659,13 @@ precedence over the `--notes=` option.
   Complete a project or set a project to incomplete. Ignored if canceled
   is also set to true. Setting to true will be ignored unless all child
   todos are completed or canceled and all child headings archived. Setting
-  to false on a canceled project will mark it as incomplete. This field
-  cannot be updated on repeating projects. Optional.
+  to false on a canceled project will mark it as incomplete. Optional.
 
 *--canceled, --cancelled*
   Cancel a project or set a project to incomplete. Takes priority over
   completed. Setting to true will be ignored unless all child todos are
   completed or canceled and all child headings archived. Setting to false
-  on a completed project will mark it as incomplete. This field cannot be
-  updated on repeating projects. Optional.
+  on a completed project will mark it as incomplete. Optional.
 
 *--reveal*
   Whether or not to navigate to and show the updated project. Default:
@@ -628,8 +673,7 @@ precedence over the `--notes=` option.
 
 *--duplicate*
   Set to true to duplicate the project before updating it, leaving the
-  original project untouched. Repeating projects cannot be duplicated.
-  Default: false. Optional.
+  original project untouched. Default: false. Optional.
 
 *--completion-date=DATE*
   ISO8601 date time string. Set the creation date for the project in the
@@ -638,8 +682,7 @@ precedence over the `--notes=` option.
 *--creation-date=DATE*
   ISO8601 date time string. Set the completion date for the project in the
   database. Ignored if the project is not completed or canceled, or if the
-  date is in the future. This field cannot be updated on repeating
-  projects. Optional.
+  date is in the future. Optional.
 
 *--todo=TITLE*
   Title of a todo to add to the project. Can be specified more than once
@@ -1002,6 +1045,51 @@ terminal Full Disk Access to read it.
 ## things upcoming [OPTIONS...]
 
 Lists upcoming tasks from the local Things database (read-only).
+
+**OPTIONS**
+
+*--db=PATH*
+  Path to the Things database. Overrides the THINGSDB environment variable.
+
+*--status=STATUS*
+  Filter by status: incomplete, completed, canceled, any. Default: incomplete.
+
+*--project=PROJECT*
+  Filter by project title or ID.
+
+*--area=AREA*
+  Filter by area title or ID.
+
+*--tag=TAG*
+  Filter by tag title or ID.
+
+*--limit=N*
+  Limit number of results (0 = no limit). Default: 200.
+
+*--recursive*
+  Include checklist items in JSON output.
+
+
+*--include-trashed*
+  Include trashed tasks.
+
+*--all*
+  Include completed, canceled, and trashed tasks.
+
+*--json*
+  Output JSON.
+
+*--no-header*
+  Suppress the header row.
+
+**NOTES**
+
+The database lives in the Things app sandbox. You may need to grant your
+terminal Full Disk Access to read it.
+
+## things repeating [OPTIONS...]
+
+Lists repeating tasks from the local Things database (read-only).
 
 **OPTIONS**
 
@@ -1453,7 +1541,7 @@ terminal Full Disk Access to read it.
 
 ## things all [OPTIONS...]
 
-Lists Inbox, Today, Upcoming, Anytime, Someday, Logbook, No Area, and Areas
+Lists Inbox, Today, Upcoming, Repeating, Anytime, Someday, Logbook, No Area, and Areas
 sections using the local Things database (read-only).
 
 **OPTIONS**

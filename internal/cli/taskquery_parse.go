@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/ossianhempel/things3-cli/internal/db"
@@ -67,6 +68,8 @@ func (q queryPredicate) Match(task db.Task) bool {
 		return q.Matcher.Match(task.UUID)
 	case "url":
 		return matchURLPredicate(q.Matcher, task.Notes)
+	case "repeating":
+		return matchBoolPredicate(q.Matcher, task.Repeating)
 	default:
 		if q.Field != "" {
 			return false
@@ -110,6 +113,21 @@ func matchURLPredicate(m matcher, notes string) bool {
 		return !notesHasURL(notes)
 	}
 	return strings.Contains(strings.ToLower(notes), m.Value)
+}
+
+func matchBoolPredicate(m matcher, value bool) bool {
+	text := strconv.FormatBool(value)
+	if m.Regex != nil {
+		return m.Regex.MatchString(text)
+	}
+	valueText := strings.TrimSpace(m.Value)
+	if valueText == "true" {
+		return value
+	}
+	if valueText == "false" {
+		return !value
+	}
+	return strings.Contains(text, valueText)
 }
 
 func notesHasURL(notes string) bool {

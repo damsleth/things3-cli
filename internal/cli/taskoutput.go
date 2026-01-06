@@ -93,6 +93,7 @@ var taskFieldAliases = map[string]string{
 	"todayindex":    "today_index",
 	"today-index":   "today_index",
 	"today_index":   "today_index",
+	"repeat":        "repeating",
 }
 
 var taskFieldHeaders = map[string]string{
@@ -110,6 +111,7 @@ var taskFieldHeaders = map[string]string{
 	"notes":        "NOTES",
 	"start":        "START",
 	"start_date":   "START_DATE",
+	"repeating":    "REPEATING",
 	"deadline":     "DEADLINE",
 	"stop_date":    "STOP_DATE",
 	"created":      "CREATED",
@@ -160,6 +162,8 @@ func taskFieldValue(task db.Task, field string) any {
 		return task.Start
 	case "start_date":
 		return task.StartDate
+	case "repeating":
+		return task.Repeating
 	case "deadline":
 		return task.Deadline
 	case "stop_date":

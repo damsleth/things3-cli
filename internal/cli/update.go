@@ -12,6 +12,7 @@ import (
 // NewUpdateCommand builds the update subcommand.
 func NewUpdateCommand(app *App) *cobra.Command {
 	opts := things.UpdateOptions{}
+	repeatOpts := RepeatOptions{}
 	var dbPath string
 	var yes bool
 	queryOpts := TaskQueryOptions{
@@ -26,6 +27,14 @@ func NewUpdateCommand(app *App) *cobra.Command {
 			rawInput, err := readInput(app.In, args)
 			if err != nil {
 				return err
+			}
+
+			repeatSpec, err := parseRepeatSpec(cmd, repeatOpts)
+			if err != nil {
+				return err
+			}
+			if repeatSpec.Enabled && strings.TrimSpace(opts.ID) == "" {
+				return fmt.Errorf("Error: repeating updates require --id")
 			}
 
 			if opts.AuthToken == "" {
@@ -100,36 +109,105 @@ func NewUpdateCommand(app *App) *cobra.Command {
 				return nil
 			}
 
-			url, err := things.BuildUpdateURL(opts, rawInput)
-			if err != nil {
-				return err
-			}
-			if app.DryRun {
-				return openURL(app, url)
-			}
-
-			if opts.AuthToken == "" {
-				_, err := things.BuildUpdateURL(things.UpdateOptions{ID: opts.ID}, "")
+			hasChanges := hasTodoUpdateChanges(opts, rawInput)
+			if !repeatSpec.Enabled {
+				url, err := things.BuildUpdateURL(opts, rawInput)
 				if err != nil {
 					return err
 				}
-			}
+				if app.DryRun {
+					return openURL(app, url)
+				}
 
-			store, _, err := db.OpenDefault(dbPath)
-			if err == nil {
-				if task, err := store.TaskByID(opts.ID); err == nil {
-					entry := ActionEntry{
-						Type:  ActionUpdate,
-						Items: []ActionItem{taskToActionItem(*task)},
-					}
-					if err := appendAction(entry); err != nil {
-						fmt.Fprintf(app.Err, "Warning: failed to write action log: %v\n", err)
+				if opts.AuthToken == "" {
+					_, err := things.BuildUpdateURL(things.UpdateOptions{ID: opts.ID}, "")
+					if err != nil {
+						return err
 					}
 				}
-				store.Close()
+
+				store, _, err := db.OpenDefault(dbPath)
+				if err == nil {
+					if task, err := store.TaskByID(opts.ID); err == nil {
+						entry := ActionEntry{
+							Type:  ActionUpdate,
+							Items: []ActionItem{taskToActionItem(*task)},
+						}
+						if err := appendAction(entry); err != nil {
+							fmt.Fprintf(app.Err, "Warning: failed to write action log: %v\n", err)
+						}
+					}
+					store.Close()
+				}
+
+				return openURL(app, url)
 			}
 
-			return openURL(app, url)
+			if hasChanges {
+				url, err := things.BuildUpdateURL(opts, rawInput)
+				if err != nil {
+					return err
+				}
+				if app.DryRun {
+					if err := openURL(app, url); err != nil {
+						return err
+					}
+					if repeatSpec.Enabled {
+						fmt.Fprintln(app.Err, "Note: --repeat is skipped in --dry-run mode.")
+					}
+					return nil
+				}
+
+				if opts.AuthToken == "" {
+					_, err := things.BuildUpdateURL(things.UpdateOptions{ID: opts.ID}, "")
+					if err != nil {
+						return err
+					}
+				}
+
+				store, _, err := db.OpenDefault(dbPath)
+				if err == nil {
+					if task, err := store.TaskByID(opts.ID); err == nil {
+						entry := ActionEntry{
+							Type:  ActionUpdate,
+							Items: []ActionItem{taskToActionItem(*task)},
+						}
+						if err := appendAction(entry); err != nil {
+							fmt.Fprintf(app.Err, "Warning: failed to write action log: %v\n", err)
+						}
+					}
+					store.Close()
+				}
+
+				if err := openURL(app, url); err != nil {
+					return err
+				}
+			} else if app.DryRun {
+				fmt.Fprintf(app.Out, "Would update repeating rule for %s\n", opts.ID)
+				return nil
+			}
+			if app.DryRun {
+				fmt.Fprintln(app.Err, "Note: --repeat is skipped in --dry-run mode.")
+				return nil
+			}
+
+			store, _, err := db.OpenDefaultWritable(dbPath)
+			if err != nil {
+				return formatDBError(err)
+			}
+			defer store.Close()
+
+			targetID, usedTemplate, err := resolveRepeatTarget(store, opts.ID, db.TaskTypeTodo)
+			if err != nil {
+				return formatDBError(err)
+			}
+			if usedTemplate {
+				fmt.Fprintf(app.Err, "Note: resolved repeating template %s for update\n", targetID)
+			}
+			if err := applyRepeatSpec(store, targetID, repeatSpec); err != nil {
+				return formatDBError(err)
+			}
+			return nil
 		},
 	}
 
@@ -160,7 +238,42 @@ func NewUpdateCommand(app *App) *cobra.Command {
 	flags.StringArrayVar(&opts.PrependChecklistItems, "prepend-checklist-item", nil, "Prepend checklist item (repeatable)")
 	flags.StringArrayVar(&opts.AppendChecklistItems, "append-checklist-item", nil, "Append checklist item (repeatable)")
 	flags.BoolVar(&yes, "yes", false, "Confirm bulk update")
+	addRepeatFlags(cmd, &repeatOpts, true)
 	addTaskQueryFlags(cmd, &queryOpts, true, true)
 
 	return cmd
+}
+
+func hasTodoUpdateChanges(opts things.UpdateOptions, rawInput string) bool {
+	if strings.TrimSpace(rawInput) != "" {
+		return true
+	}
+	if opts.Notes != "" || opts.PrependNotes != "" || opts.AppendNotes != "" {
+		return true
+	}
+	if opts.When != "" || opts.Later {
+		return true
+	}
+	if opts.Deadline != "" {
+		return true
+	}
+	if opts.Tags != "" || opts.AddTags != "" {
+		return true
+	}
+	if opts.Completed || opts.Canceled {
+		return true
+	}
+	if opts.Reveal || opts.Duplicate {
+		return true
+	}
+	if opts.CompletionDate != "" || opts.CreationDate != "" {
+		return true
+	}
+	if opts.Heading != "" || opts.List != "" || opts.ListID != "" {
+		return true
+	}
+	if len(opts.ChecklistItems) > 0 || len(opts.PrependChecklistItems) > 0 || len(opts.AppendChecklistItems) > 0 {
+		return true
+	}
+	return false
 }

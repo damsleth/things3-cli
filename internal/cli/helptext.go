@@ -27,6 +27,7 @@ COMMANDS
   inbox          - list inbox tasks from the Things database
   today          - list today tasks from the Things database
   upcoming       - list upcoming tasks from the Things database
+  repeating      - list repeating tasks from the Things database
   anytime        - list anytime tasks from the Things database
   someday        - list someday tasks from the Things database
   logbook        - list logbook tasks from the Things database
@@ -478,6 +479,96 @@ SYNOPSIS
 DESCRIPTION
   Lists tasks scheduled in the future using the local Things database
   (read-only). Tasks with only deadlines are not included.
+
+OPTIONS
+  --db=PATH
+    Path to the Things database. Overrides the THINGSDB environment variable.
+
+  --status=STATUS
+    Filter by status: incomplete, completed, canceled, any. Default: incomplete.
+
+  --project=PROJECT
+    Filter by project title or ID.
+
+  --area=AREA
+    Filter by area title or ID.
+
+  --tag=TAG
+    Filter by tag title or ID.
+
+  --search=TEXT
+    Case-insensitive substring match on title or notes.
+
+  --query=QUERY
+    Rich query with boolean ops, fields, and regex (e.g. title:/regex/ AND tag:work).
+
+  --limit=N
+    Limit number of results (0 = no limit). Default: 200.
+
+  --offset=N
+    Offset results for pagination.
+
+  --created-after=DATE
+    Filter tasks created after (YYYY-MM-DD or RFC3339).
+
+  --created-before=DATE
+    Filter tasks created before (YYYY-MM-DD or RFC3339).
+
+  --modified-after=DATE
+    Filter tasks modified after (YYYY-MM-DD or RFC3339).
+
+  --modified-before=DATE
+    Filter tasks modified before (YYYY-MM-DD or RFC3339).
+
+  --due-before=DATE
+    Filter tasks due before (YYYY-MM-DD).
+
+  --start-before=DATE
+    Filter tasks starting before (YYYY-MM-DD).
+
+  --has-url
+    Filter tasks with URLs in notes.
+
+  --sort=FIELDS
+    Sort by fields (e.g. created,-deadline,title).
+
+  --recursive
+    Include checklist items in JSON output.
+
+  --include-trashed
+    Include trashed tasks.
+
+  --all
+    Include completed, canceled, and trashed tasks.
+
+  --format=FORMAT
+    Output format: table, json, jsonl, csv.
+
+  --select=FIELDS
+    Select fields (comma-separated).
+
+  --json
+    Output JSON (alias for --format json).
+
+  --no-header
+    Suppress the header row.
+
+NOTES
+  The database lives in the Things app sandbox. You may need to grant your
+  terminal Full Disk Access to read it.
+`
+
+const repeatingHelp = `Usage: things repeating [OPTIONS...]
+
+NAME
+  things repeating - list repeating tasks from the Things database
+
+SYNOPSIS
+  things repeating [OPTIONS...]
+
+DESCRIPTION
+  Lists repeating tasks using the local Things database (read-only). By default
+  only incomplete, non-trashed tasks are shown.
 
 OPTIONS
   --db=PATH
@@ -1377,8 +1468,8 @@ SYNOPSIS
   things all [OPTIONS...]
 
 DESCRIPTION
-  Lists Inbox, Today, Upcoming, Anytime, Someday, Logbook, No Area, and Areas
-  sections using the local Things database (read-only).
+  Lists Inbox, Today, Upcoming, Repeating, Anytime, Someday, Logbook, No Area,
+  and Areas sections using the local Things database (read-only).
 
 OPTIONS
   --db=PATH
@@ -1418,7 +1509,15 @@ DESCRIPTION
   remaining lines are set as the todo's notes. Notes set this way take
   precedence over the {{BT}}--notes={{BT}} option.
 
+  Repeating todos are created via the Things database and require a single
+  explicit title (no {{BT}}--titles{{BT}}, {{BT}}--use-clipboard{{BT}}, or
+  quick entry).
+
 OPTIONS
+  --db=PATH
+    Path to the Things database. Overrides the THINGSDB environment variable.
+    Used for repeat operations.
+
   --canceled, --cancelled
     Whether or not the todo should be set to canceled. Default: false. Takes
     priority over completed.
@@ -1476,6 +1575,24 @@ OPTIONS
     string, or a date time string. Using a date time string adds a reminder
     for that time. The time component is ignored if anytime or someday is
     specified.
+
+  --repeat=UNIT
+    Create a repeating template. Units: day, week, month, year.
+
+  --repeat-mode=MODE
+    Repeat mode: after-completion (default) or schedule.
+
+  --repeat-every=N
+    Repeat every N units. Default: 1.
+
+  --repeat-start=DATE
+    Anchor date for the repeat rule (YYYY-MM-DD). Defaults to today.
+
+  --repeat-until=DATE
+    Stop repeating after the given date (YYYY-MM-DD). Optional.
+
+  --repeat-deadline=DAYS
+    Add repeating deadlines; each copy appears in Today DAYS earlier.
 
   --titles=TITLE1[,TITLE2,TITLE3...]
     Use instead of title to create multiple todos. Takes priority over title
@@ -1598,6 +1715,24 @@ OPTIONS
     string, or a date time string. Using a date time string adds a reminder
     for that time. The time component is ignored if anytime or someday is
     specified. Optional.
+
+  --repeat=UNIT
+    Create a repeating template. Units: day, week, month, year.
+
+  --repeat-mode=MODE
+    Repeat mode: after-completion (default) or schedule.
+
+  --repeat-every=N
+    Repeat every N units. Default: 1.
+
+  --repeat-start=DATE
+    Anchor date for the repeat rule (YYYY-MM-DD). Defaults to today.
+
+  --repeat-until=DATE
+    Stop repeating after the given date (YYYY-MM-DD). Optional.
+
+  --repeat-deadline=DAYS
+    Add repeating deadlines; each copy appears in Today DAYS earlier.
 
   --todo=TITLE
     Title of a todo to add to the project. Can be specified more than once
@@ -1760,6 +1895,9 @@ DESCRIPTION
   matching todos. Use {{BT}}--dry-run{{BT}} to preview and {{BT}}--yes{{BT}}
   to confirm bulk updates.
 
+  Repeating schedules are updated via the Things database and require
+  {{BT}}--id{{BT}} (bulk updates are not supported).
+
   If {{BT}}-{{BT}} is given as a title, it is read from STDIN. When titles have
   multiple lines of text, the first is set as the todo's title and the
   remaining lines are set as the todo's notes. Notes set this way take
@@ -1885,6 +2023,27 @@ OPTIONS
     Add checklist items to the end of the list of checklist items in the
     todo (maximum of 100). Can be specified multiple times on the command
     line.
+
+  --repeat=UNIT
+    Set a repeating schedule. Units: day, week, month, year.
+
+  --repeat-mode=MODE
+    Repeat mode: after-completion (default) or schedule.
+
+  --repeat-every=N
+    Repeat every N units. Default: 1.
+
+  --repeat-start=DATE
+    Anchor date for the repeat rule (YYYY-MM-DD). Defaults to today.
+
+  --repeat-until=DATE
+    Stop repeating after the given date (YYYY-MM-DD). Optional.
+
+  --repeat-deadline=DAYS
+    Add repeating deadlines; each copy appears in Today DAYS earlier.
+
+  --repeat-clear
+    Remove the repeating schedule for the todo.
 
 EXAMPLES
   things update --id=8TN1bbz946oBsRBGiQ2XBN "Updated Title"
@@ -2130,12 +2289,10 @@ OPTIONS
     Set the when field of a project. Possible values: today, tomorrow,
     evening, someday, a date string, or a date time string. Including a time
     adds a reminder for that time. The time component is ignored if someday
-    is specified. This field cannot be updated on repeating projects.
-    Optional.
+    is specified. Optional.
 
   --deadline=DATE
-    The deadline to apply to the project. This field cannot be updated on
-    repeating projects. Optional.
+    The deadline to apply to the project. Optional.
 
   --tags=TAG1[,TAG2,TAG3...]
     Comma separated strings corresponding to the titles of tags. Replaces
@@ -2159,15 +2316,13 @@ OPTIONS
     Complete a project or set a project to incomplete. Ignored if canceled
     is also set to true. Setting to true will be ignored unless all child
     todos are completed or canceled and all child headings archived. Setting
-    to false on a canceled project will mark it as incomplete. This field
-    cannot be updated on repeating projects. Optional.
+    to false on a canceled project will mark it as incomplete. Optional.
 
   --canceled, --cancelled
     Cancel a project or set a project to incomplete. Takes priority over
     completed. Setting to true will be ignored unless all child todos are
     completed or canceled and all child headings archived. Setting to false
-    on a completed project will mark it as incomplete. This field cannot be
-    updated on repeating projects. Optional.
+    on a completed project will mark it as incomplete. Optional.
 
   --reveal
     Whether or not to navigate to and show the updated project. Default:
@@ -2175,8 +2330,7 @@ OPTIONS
 
   --duplicate
     Set to true to duplicate the project before updating it, leaving the
-    original project untouched. Repeating projects cannot be duplicated.
-    Default: false. Optional.
+    original project untouched. Default: false. Optional.
 
   --completion-date=DATE
     ISO8601 date time string. Set the creation date for the project in the
@@ -2185,8 +2339,7 @@ OPTIONS
   --creation-date=DATE
     ISO8601 date time string. Set the completion date for the project in the
     database. Ignored if the project is not completed or canceled, or if the
-    date is in the future. This field cannot be updated on repeating
-    projects. Optional.
+    date is in the future. Optional.
 
   --todo=TITLE
     Title of a todo to add to the project. Can be specified more than once

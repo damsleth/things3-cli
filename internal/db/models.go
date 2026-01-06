@@ -44,6 +44,7 @@ type Task struct {
 	Notes        string          `json:"notes,omitempty"`
 	Start        string          `json:"start,omitempty"`
 	StartDate    string          `json:"start_date,omitempty"`
+	Repeating    bool            `json:"repeating,omitempty"`
 	Deadline     string          `json:"deadline,omitempty"`
 	StopDate     string          `json:"stop_date,omitempty"`
 	Created      string          `json:"created,omitempty"`
@@ -119,6 +120,8 @@ type TaskFilter struct {
 	StartBefore           *int
 	HasURL                *bool
 	Order                 string
+	IncludeRepeating      bool
+	RepeatingOnly         bool
 }
 
 func StatusLabel(status int) string {

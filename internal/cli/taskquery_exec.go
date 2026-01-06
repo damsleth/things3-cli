@@ -71,6 +71,9 @@ func hasExplicitSelector(cmdFlags map[string]bool, opts TaskQueryOptions) bool {
 	if opts.HasURLSet {
 		return true
 	}
+	if opts.IncludeRepeating || opts.RepeatingOnly {
+		return true
+	}
 	if opts.All || opts.IncludeTrashed {
 		return true
 	}

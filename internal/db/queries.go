@@ -579,7 +579,7 @@ func (s *Store) queryTasks(where string, args []any, filter TaskFilter, order st
 		return nil, fmt.Errorf("database not initialized")
 	}
 	var b strings.Builder
-	b.WriteString("SELECT t.uuid, t.type, t.title, t.status, t.trashed, t.notes, t.start, t.startDate, t.deadline, t.stopDate, t.creationDate, t.userModificationDate, t.\"index\", t.todayIndex, ")
+	b.WriteString("SELECT t.uuid, t.type, t.title, t.status, t.trashed, t.notes, t.start, t.startDate, t.deadline, t.stopDate, t.creationDate, t.userModificationDate, t.\"index\", t.todayIndex, (t.rt1_recurrenceRule IS NOT NULL) AS repeating, ")
 	b.WriteString("t.project, p.title, t.area, a.title, t.heading, h.title, ")
 	b.WriteString("(SELECT group_concat(title, '" + tagSeparator + "') FROM (")
 	b.WriteString("SELECT tag.title AS title FROM TMTag tag ")
@@ -665,7 +665,11 @@ func (s *Store) queryTasks(where string, args []any, filter TaskFilter, order st
 			b.WriteString(" AND (IFNULL(t.notes, '') NOT LIKE '%http://%' AND IFNULL(t.notes, '') NOT LIKE '%https://%')")
 		}
 	}
-	b.WriteString(" AND t.rt1_recurrenceRule IS NULL")
+	if filter.RepeatingOnly {
+		b.WriteString(" AND t.rt1_recurrenceRule IS NOT NULL")
+	} else if !filter.IncludeRepeating {
+		b.WriteString(" AND t.rt1_recurrenceRule IS NULL")
+	}
 
 	orderClause := order
 	if filter.Order != "" {
@@ -729,6 +733,7 @@ func scanTaskRows(rows *sql.Rows) ([]Task, error) {
 		var modified sql.NullFloat64
 		var index sql.NullInt64
 		var todayIndex sql.NullInt64
+		var repeating sql.NullInt64
 		var projectID sql.NullString
 		var projectTitle sql.NullString
 		var areaID sql.NullString
@@ -736,7 +741,7 @@ func scanTaskRows(rows *sql.Rows) ([]Task, error) {
 		var headingID sql.NullString
 		var headingTitle sql.NullString
 		var tagTitles sql.NullString
-		if err := rows.Scan(&t.UUID, &taskType, &t.Title, &t.Status, &t.Trashed, &notes, &start, &startDate, &deadline, &stopDate, &created, &modified, &index, &todayIndex, &projectID, &projectTitle, &areaID, &areaTitle, &headingID, &headingTitle, &tagTitles); err != nil {
+		if err := rows.Scan(&t.UUID, &taskType, &t.Title, &t.Status, &t.Trashed, &notes, &start, &startDate, &deadline, &stopDate, &created, &modified, &index, &todayIndex, &repeating, &projectID, &projectTitle, &areaID, &areaTitle, &headingID, &headingTitle, &tagTitles); err != nil {
 			return nil, err
 		}
 		t.Type = taskTypeLabel(taskType)
@@ -746,6 +751,9 @@ func scanTaskRows(rows *sql.Rows) ([]Task, error) {
 		if todayIndex.Valid {
 			val := int(todayIndex.Int64)
 			t.TodayIndex = &val
+		}
+		if repeating.Valid {
+			t.Repeating = repeating.Int64 != 0
 		}
 		if notes.Valid {
 			t.Notes = notes.String

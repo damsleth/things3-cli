@@ -1,6 +1,11 @@
 package cli
 
 import (
+	"fmt"
+	"time"
+
+	"github.com/ossianhempel/things3-cli/internal/db"
+	"github.com/ossianhempel/things3-cli/internal/repeat"
 	"github.com/ossianhempel/things3-cli/internal/things"
 	"github.com/spf13/cobra"
 )
@@ -8,6 +13,8 @@ import (
 // NewAddCommand builds the add subcommand.
 func NewAddCommand(app *App) *cobra.Command {
 	opts := things.AddOptions{}
+	repeatOpts := RepeatOptions{}
+	var dbPath string
 
 	cmd := &cobra.Command{
 		Use:   "add [OPTIONS...] [--] [-|TITLE]",
@@ -18,12 +25,67 @@ func NewAddCommand(app *App) *cobra.Command {
 				return err
 			}
 
+			repeatSpec, err := parseRepeatSpec(cmd, repeatOpts)
+			if err != nil {
+				return err
+			}
+			title := extractTitle(rawInput, opts.TitlesRaw)
+
+			if repeatSpec.Enabled {
+				if repeatSpec.Clear {
+					return fmt.Errorf("Error: --repeat-clear is only valid with update commands")
+				}
+				if opts.TitlesRaw != "" {
+					return fmt.Errorf("Error: repeating add does not support --titles")
+				}
+				if opts.UseClipboard != "" {
+					return fmt.Errorf("Error: repeating add does not support --use-clipboard")
+				}
+				if opts.ShowQuickEntry || title == "" {
+					return fmt.Errorf("Error: repeating add requires an explicit title")
+				}
+			}
+
 			url := things.BuildAddURL(opts, rawInput)
-			return openURL(app, url)
+			if !repeatSpec.Enabled {
+				return openURL(app, url)
+			}
+			if app.DryRun {
+				if err := openURL(app, url); err != nil {
+					return err
+				}
+				fmt.Fprintln(app.Err, "Note: --repeat is skipped in --dry-run mode.")
+				return nil
+			}
+
+			started := time.Now().Add(-2 * time.Second)
+			if err := openURL(app, url); err != nil {
+				return err
+			}
+			store, _, err := db.OpenDefaultWritable(dbPath)
+			if err != nil {
+				return formatDBError(err)
+			}
+			defer store.Close()
+
+			taskID, err := waitForCreatedItem(store, title, db.TaskTypeTodo, started)
+			if err != nil {
+				return formatDBError(err)
+			}
+			update, err := repeat.BuildUpdate(repeatSpec.Spec)
+			if err != nil {
+				return err
+			}
+			if err := store.ApplyRepeatRule(taskID, update); err != nil {
+				return formatDBError(err)
+			}
+			return nil
 		},
 	}
 
 	flags := cmd.Flags()
+	flags.StringVarP(&dbPath, "db", "d", "", "Path to Things database (overrides THINGSDB)")
+	flags.StringVar(&dbPath, "database", "", "Alias for --db")
 	flags.StringVar(&opts.When, "when", "", "When to schedule the todo")
 	flags.StringVar(&opts.Deadline, "deadline", "", "Deadline for the todo")
 	flags.BoolVar(&opts.Completed, "completed", false, "Mark the todo completed")
@@ -41,6 +103,7 @@ func NewAddCommand(app *App) *cobra.Command {
 	flags.StringVar(&opts.Tags, "tags", "", "Comma-separated tags")
 	flags.StringVar(&opts.TitlesRaw, "titles", "", "Comma-separated titles for multiple todos")
 	flags.StringVar(&opts.UseClipboard, "use-clipboard", "", "Use clipboard content")
+	addRepeatFlags(cmd, &repeatOpts, false)
 
 	return cmd
 }

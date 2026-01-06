@@ -39,6 +39,7 @@ brew install ossianhempel/tap/things3-cli
 - `inbox`            List inbox tasks
 - `today`            List today tasks
 - `upcoming`         List upcoming tasks
+- `repeating`        List repeating tasks
 - `anytime`          List anytime tasks
 - `someday`          List someday tasks
 - `logbook`          List logbook tasks
@@ -85,6 +86,26 @@ path with `THINGSDB` or `--db`.
 
 Note: The database lives inside the Things app sandbox, so you may need to
 grant your terminal Full Disk Access.
+
+## Repeating todos
+
+Use `--repeat` flags with `add` or `update`
+to create or change repeating templates. These changes write directly to the
+Things database, so Full Disk Access is required. Repeating updates require a
+single explicit title (for add) or `--id` (for update).
+
+Supported patterns: every N day/week/month/year, in after-completion (default)
+or schedule mode. The anchor date controls weekday/month/day; multi-day weekly
+patterns are not supported yet. Use `--repeat-until` to stop after a date.
+Repeating projects are not supported.
+
+Examples:
+
+```
+things add "Daily standup" --repeat=day --repeat-mode=schedule
+things update --id <uuid> --repeat=week --repeat-every=2
+things update --id <uuid> --repeat-clear
+```
 
 ## Notes
 

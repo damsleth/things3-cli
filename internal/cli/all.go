@@ -54,6 +54,14 @@ func NewAllCommand(app *App) *cobra.Command {
 			if err != nil {
 				return formatDBError(err)
 			}
+			repeatingFilter := incompleteFilter
+			repeatingFilter.IncludeRepeating = true
+			repeatingFilter.RepeatingOnly = true
+			repeatingFilter.Types = []int{db.TaskTypeTodo}
+			repeating, err := store.Tasks(repeatingFilter)
+			if err != nil {
+				return formatDBError(err)
+			}
 			anytime, err := store.AnytimeTasks(incompleteFilter)
 			if err != nil {
 				return formatDBError(err)
@@ -100,6 +108,7 @@ func NewAllCommand(app *App) *cobra.Command {
 					{Title: "Inbox", Items: inbox},
 					{Title: "Today", Items: today},
 					{Title: "Upcoming", Items: upcoming},
+					{Title: "Repeating", Items: repeating},
 					{Title: "Anytime", Items: anytime},
 					{Title: "Someday", Items: someday},
 					{Title: "Logbook", Items: logbook},
@@ -142,6 +151,14 @@ func NewAllCommand(app *App) *cobra.Command {
 					return nil
 				}
 				return printTasks(app.Out, upcoming, tableOpts)
+			}); err != nil {
+				return err
+			}
+			if err := printSection("Repeating", func() error {
+				if len(repeating) == 0 {
+					return nil
+				}
+				return printTasks(app.Out, repeating, tableOpts)
 			}); err != nil {
 				return err
 			}

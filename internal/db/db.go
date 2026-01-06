@@ -24,7 +24,7 @@ func Open(path string) (*Store, error) {
 	if err != nil {
 		return nil, fmt.Errorf("resolve database path: %w", err)
 	}
-	dsn := sqliteDSN(abs)
+	dsn := sqliteDSN(abs, "ro")
 	conn, err := sql.Open("sqlite", dsn)
 	if err != nil {
 		return nil, fmt.Errorf("open database: %w", err)
@@ -65,10 +65,47 @@ func (s *Store) Path() string {
 	return s.path
 }
 
-func sqliteDSN(path string) string {
+// OpenWritable opens a Things database at the provided path in read-write mode.
+func OpenWritable(path string) (*Store, error) {
+	if path == "" {
+		return nil, fmt.Errorf("empty database path")
+	}
+	abs, err := filepath.Abs(path)
+	if err != nil {
+		return nil, fmt.Errorf("resolve database path: %w", err)
+	}
+	dsn := sqliteDSN(abs, "rw")
+	conn, err := sql.Open("sqlite", dsn)
+	if err != nil {
+		return nil, fmt.Errorf("open database: %w", err)
+	}
+	if err := conn.Ping(); err != nil {
+		_ = conn.Close()
+		return nil, fmt.Errorf("open database: %w", err)
+	}
+	return &Store{conn: conn, path: abs}, nil
+}
+
+// OpenDefaultWritable resolves the Things database path and opens it in read-write mode.
+func OpenDefaultWritable(override string) (*Store, string, error) {
+	path, err := ResolveDatabasePath(override)
+	if err != nil {
+		return nil, "", err
+	}
+	store, err := OpenWritable(path)
+	if err != nil {
+		return nil, path, err
+	}
+	return store, path, nil
+}
+
+func sqliteDSN(path string, mode string) string {
 	u := url.URL{Scheme: "file", Path: path}
 	q := u.Query()
-	q.Set("mode", "ro")
+	if mode == "" {
+		mode = "ro"
+	}
+	q.Set("mode", mode)
 	u.RawQuery = q.Encode()
 	return u.String()
 }

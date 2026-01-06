@@ -26,6 +26,8 @@ type TaskQueryOptions struct {
 	ModifiedAfter    string
 	DueBefore        string
 	StartBefore      string
+	IncludeRepeating bool
+	RepeatingOnly    bool
 	HasURL           bool
 	HasURLSet        bool
 	Sort             string
@@ -88,6 +90,8 @@ func buildTaskFilter(store *db.Store, opts TaskQueryOptions) (db.TaskFilter, []T
 		Offset:                opts.Offset,
 		IncludeChecklist:      opts.IncludeChecklist,
 		Order:                 orderClause,
+		IncludeRepeating:      opts.IncludeRepeating || opts.RepeatingOnly,
+		RepeatingOnly:         opts.RepeatingOnly,
 	}
 
 	if opts.CreatedAfter != "" {

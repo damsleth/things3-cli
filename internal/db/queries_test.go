@@ -72,6 +72,14 @@ func TestProjectsAndTasksQueries(t *testing.T) {
 		t.Fatalf("unexpected tags: %#v", tasks[0].Tags)
 	}
 
+	repeating, err := store.Tasks(TaskFilter{Status: &status, ExcludeTrashedContext: true, Types: []int{TaskTypeTodo}, RepeatingOnly: true})
+	if err != nil {
+		t.Fatalf("repeating tasks: %v", err)
+	}
+	if len(repeating) != 1 || repeating[0].Title != "Repeat Task" || !repeating[0].Repeating {
+		t.Fatalf("unexpected repeating tasks: %#v", repeating)
+	}
+
 	searched, err := store.Tasks(TaskFilter{Search: "notes", Status: &status, ExcludeTrashedContext: true, Types: []int{TaskTypeTodo}})
 	if err != nil {
 		t.Fatalf("search tasks: %v", err)
@@ -158,6 +166,9 @@ func seedTestDB(conn *sql.DB) error {
 		return err
 	}
 	if _, err := conn.Exec(`INSERT INTO TMTask (uuid, type, status, trashed, title, project, area, heading, notes, start, startDate, deadline, creationDate, userModificationDate) VALUES ('T1', ?, ?, 0, 'Task One', 'P1', 'A1', 'H1', 'Some notes', 1, ?, ?, ?, ?);`, TaskTypeTodo, StatusIncomplete, startDate, deadline, nowUnix, nowUnix); err != nil {
+		return err
+	}
+	if _, err := conn.Exec(`INSERT INTO TMTask (uuid, type, status, trashed, title, project, area, heading, start, startDate, deadline, creationDate, userModificationDate, rt1_recurrenceRule) VALUES ('T2', ?, ?, 0, 'Repeat Task', 'P1', 'A1', 'H1', 1, ?, ?, ?, ?, X'01');`, TaskTypeTodo, StatusIncomplete, startDate, deadline, nowUnix, nowUnix); err != nil {
 		return err
 	}
 	if _, err := conn.Exec(`INSERT INTO TMTag (uuid, title) VALUES ('TAG1', 'urgent');`); err != nil {

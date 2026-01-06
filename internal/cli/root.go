@@ -41,6 +41,7 @@ func NewRoot(app *App) *cobra.Command {
 	cmd.AddCommand(NewInboxCommand(app))
 	cmd.AddCommand(NewTodayCommand(app))
 	cmd.AddCommand(NewUpcomingCommand(app))
+	cmd.AddCommand(NewRepeatingCommand(app))
 	cmd.AddCommand(NewAnytimeCommand(app))
 	cmd.AddCommand(NewSomedayCommand(app))
 	cmd.AddCommand(NewLogbookCommand(app))
@@ -89,6 +90,8 @@ func NewRoot(app *App) *cobra.Command {
 				printHelp(app.Out, formatHelpText(todayHelp, isTTY(app.Out)))
 			case "upcoming":
 				printHelp(app.Out, formatHelpText(upcomingHelp, isTTY(app.Out)))
+			case "repeating":
+				printHelp(app.Out, formatHelpText(repeatingHelp, isTTY(app.Out)))
 			case "anytime":
 				printHelp(app.Out, formatHelpText(anytimeHelp, isTTY(app.Out)))
 			case "someday":
@@ -167,6 +170,8 @@ func NewRoot(app *App) *cobra.Command {
 			printHelp(app.Out, formatHelpText(todayHelp, isTTY(app.Out)))
 		case "upcoming":
 			printHelp(app.Out, formatHelpText(upcomingHelp, isTTY(app.Out)))
+		case "repeating":
+			printHelp(app.Out, formatHelpText(repeatingHelp, isTTY(app.Out)))
 		case "anytime":
 			printHelp(app.Out, formatHelpText(anytimeHelp, isTTY(app.Out)))
 		case "someday":

@@ -54,3 +54,18 @@ func TestParseRichQueryURLPredicate(t *testing.T) {
 		t.Fatalf("expected 1 match, got %d", len(filtered))
 	}
 }
+
+func TestParseRichQueryRepeatingPredicate(t *testing.T) {
+	expr, err := parseRichQuery("repeating:true")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	tasks := []db.Task{
+		{Title: "repeat", Repeating: true},
+		{Title: "once", Repeating: false},
+	}
+	filtered := filterTasksByQuery(tasks, expr)
+	if len(filtered) != 1 || filtered[0].Title != "repeat" {
+		t.Fatalf("unexpected matches: %+v", filtered)
+	}
+}
