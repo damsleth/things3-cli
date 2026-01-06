@@ -6,8 +6,10 @@ VERSION=${1:?'usage: scripts/release-notes.sh <version>'}
 VERSION=${VERSION#v}
 
 NOTES=$(awk -v ver="$VERSION" '
-  $0 ~ "^## \\[" ver "\\]" {found=1; next}
-  found && /^## \\[/ {exit}
+  $0 ~ "^## " {
+    if (found) exit
+    if (index($0, "## [" ver "]") == 1) {found=1; next}
+  }
   found {print}
 ' "$ROOT_DIR/CHANGELOG.md")
 
